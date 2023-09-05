@@ -45,3 +45,36 @@ Install sveltekit-view-transition with your package manager of choice
 ## Usage/Examples
 
 The library propose itself to ease the common use cases for `view-transition-api`.
+
+The most easy and immediate setup is importing and adding `setupViewTransition` in the root layout page. This will automatically enable the default transition at every navigation.
+
+```svelte
+<script>
+	import { setupViewTransition } from 'sveltekit-view-transition';
+
+	setupViewTransition();
+</script>
+
+<slot />
+```
+
+You can target and modify the default animation with `::view-transition-old(root)` and `::view-transition-new(root)`. However it's ofter useful to have specific part of the page have different view transitions. For example the header might be fixed and we would like to animate it differently. To allow for this use case `setupViewTransition` return an object from which you can destructure `transition`.
+
+## transition
+
+`transition` is an action that accept a string as input and assign that string as the `view-transition-name` of that element. Plain and simple.
+
+```svelte
+<script>
+	import { setupViewTransition } from 'sveltekit-view-transition';
+
+	const { transition } = setupViewTransition();
+</script>
+
+<header use:transition="header" >
+ <!-- links -->
+</header>
+<slot />
+```
+
+This will allow you to target the header with `::view-transition-old(header)` and `::view-transition-new(header)`

@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.0.4
+
+### Patch Changes
+
+- a174eb1: precise peerDependencies
+
 ## 0.0.3
 
 ### Patch Changes

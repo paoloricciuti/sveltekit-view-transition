@@ -1,58 +1,47 @@
-# create-svelte
+# sveltekit-view-transition
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+An abstraction on top of `view-transition-api` and `onNavigate` to allow for a seamless experience in SvelteKit.
 
-Read more about creating a library [in the docs](https://kit.svelte.dev/docs/packaging).
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-## Creating a project
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/sveltekit-view-transition)
 
-If you're seeing this, you've probably already done this step. Congrats!
+![npm](https://img.shields.io/npm/v/sveltekit-view-transition)
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+![npm](https://img.shields.io/npm/dt/sveltekit-view-transition)
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+![GitHub last commit](https://img.shields.io/github/last-commit/paoloricciuti/sveltekit-view-transition)
 
-## Developing
+## Contributing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Contributions are always welcome!
 
-```bash
-npm run dev
+For the moment there's no code of conduct neither a contributing guideline but if you found a problem or have an idea feel free to [open an issue](https://github.com/paoloricciuti/sveltekit-view-transition/issues/new)
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+If you want the fastest way to open a PR try out Codeflow
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+[![Open in Codeflow](https://developer.stackblitz.com/img/open_in_codeflow.svg)](https://pr.new/paoloricciuti/sveltekit-view-transition/)
 
-## Building
+## Authors
 
-To build your library:
+- [@paoloricciuti](https://www.github.com/paoloricciuti)
+
+## Installation
+
+Install sveltekit-view-transition with your package manager of choice
 
 ```bash
-npm run package
+  npm install sveltekit-view-transition@latest -D
 ```
-
-To create a production version of your showcase app:
 
 ```bash
-npm run build
+  yarn add sveltekit-view-transition@latest -D
 ```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
-
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
 
 ```bash
-npm publish
+  pnpm install sveltekit-view-transition@latest -D
 ```
+
+## Usage/Examples
+
+The library propose itself to ease the common use cases for `view-transition-api`.

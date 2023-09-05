@@ -18,6 +18,7 @@
 		"build": "vite build && npm run package",
 		"preview": "vite preview",
 		"package": "svelte-kit sync && svelte-package && publint",
+		"changeset:add": "changeset",
 		"changeset:publish": "pnpm run build && changeset publish",
 		"prepublishOnly": "npm run package",
 		"test": "npm run test:integration && npm run test:unit",

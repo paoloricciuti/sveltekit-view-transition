@@ -1,0 +1,29 @@
+::view-transition-new(root),
+::view-transition-old(root) {
+	animation: slide 250ms;
+}
+
+::view-transition-new(root) {
+	--from: 100%;
+	--to: 0%;
+}
+
+.back::view-transition-new(root) {
+	--from: -100%;
+	--to: 0%;
+}
+
+.back::view-transition-old(root) {
+	--from: 0%;
+	--to: 100%;
+}
+
+@keyframes slide {
+	from {
+		transform: translateX(var(--from, 0%));
+	}
+
+	to {
+		transform: translateX(var(--to, -100%));
+	}
+}

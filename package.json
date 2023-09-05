@@ -24,8 +24,8 @@
 		"test": "npm run test:integration && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write .",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest"
 	},
@@ -41,6 +41,7 @@
 		"!dist/**/*.spec.*"
 	],
 	"peerDependencies": {
+		"@sveltejs/kit": "^1.20.4",
 		"svelte": "^4.0.0"
 	},
 	"devDependencies": {

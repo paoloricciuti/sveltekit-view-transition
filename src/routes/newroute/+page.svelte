@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { setupViewTransition } from '$lib/sveltekit-view-transition.js';
-	import { onMount } from 'svelte';
 
 	const { transition, on, classes } = setupViewTransition();
 	classes(({ navigation }) => {

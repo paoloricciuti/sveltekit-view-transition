@@ -279,23 +279,33 @@ There are 7 types of events you can subscribe to in order of calling
 
 The `on` function also returns a function that unregister the callback when called.
 
+This function should be called inside the `afterNavigate` hook to ensure the registration even if the navigation is towards the same component.
+
 ### off
 
 It's a function to unsubscribe a specific handle from a specific event. You will probably rarely use this given that the `on` function already returns the unsubscribe.
+
+This function should be called inside the `afterNavigate` hook to ensure the registration even if the navigation is towards the same component.
 
 ### classes
 
 Much like the `classes` function on the action this function can be called immediately in the script tag of a component to add a specific class to the `:root` element during a navigation. It can either be a array of strings or a function that returns an array of strings. The function takes as a parameter a navigation object just like the one from the action.
 
+This function should be called inside the `afterNavigate` hook to ensure the registration even if the navigation is towards the same component.
+
 ```svelte
 <script>
 	import { setupViewTransition } from 'sveltekit-view-transition';
+	import { afterNavigate } from '$app/navigation';
 
 	const { classes } = setupViewTransition();
-	classes(({ navigation }) => {
-		if (navigation.to?.route.id === '/') {
-			return ['back'];
-		}
+
+	afterNavigate(() => {
+		classes(({ navigation }) => {
+			if (navigation.to?.route.id === '/') {
+				return ['back'];
+			}
+		});
 	});
 </script>
 ```

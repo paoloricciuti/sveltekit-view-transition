@@ -18,6 +18,13 @@ export type TransitionAction = {
 		| ((props: SveltekitViewTransitionEventsMap['after-navigation-complete']) => boolean);
 };
 
+interface ViewTransition {
+	updateCallbackDone: Promise<void>;
+	ready: Promise<void>;
+	finished: Promise<void>;
+	skipTransition: () => void;
+}
+
 export type SveltekitViewTransitionEventsMap = {
 	'before-start-view-transition': {
 		navigation: OnNavigate;

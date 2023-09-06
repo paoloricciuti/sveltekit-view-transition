@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.0.6
+
+### Patch Changes
+
+- 5b2c3bf: fix readme to hint at the usage of afterNavigate
+
 ## 0.0.5
 
 ### Patch Changes

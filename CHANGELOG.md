@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.0.5
+
+### Patch Changes
+
+- ebc946e: emit types
+
 ## 0.0.4
 
 ### Patch Changes

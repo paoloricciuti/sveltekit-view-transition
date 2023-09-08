@@ -31,15 +31,15 @@ If you want the fastest way to open a PR try out Codeflow
 Install sveltekit-view-transition with your package manager of choice
 
 ```bash
-  npm install sveltekit-view-transition@latest -D
+npm install sveltekit-view-transition@latest -D
 ```
 
 ```bash
-  yarn add sveltekit-view-transition@latest -D
+yarn add sveltekit-view-transition@latest -D
 ```
 
 ```bash
-  pnpm install sveltekit-view-transition@latest -D
+pnpm install sveltekit-view-transition@latest -D
 ```
 
 ## Usage/Examples

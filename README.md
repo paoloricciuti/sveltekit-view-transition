@@ -83,7 +83,7 @@ Now while this may seem enough sometimes you might want to be a bit more creativ
 
 #### name
 
-This is the name of the transition, much like the string that you would've passed before it's what will end up as the `view-transition-name`. It's the only required field.
+This is the name of the transition, much like the string that you would've passed before it's what will end up as the `view-transition-name`. It's the only required field and it can be either a string or a function that takes a navigation object and return a string.
 
 #### classes
 
@@ -225,6 +225,8 @@ in this example when we navigate back from the `/post/1` page the title will sli
 #### shouldApply
 
 As mentioned above this can be either a boolean or a function that takes a navigation object (this time the `from` is this page and the `to` is the page you are navigating to) and return a boolean. If the boolean is true the transition name will be applied. This is useful when you want to navigate from a list to a detail.
+
+NB: the default is true so if you don't pass `shouldApply` the transition name will be applied every time.
 
 So completing the example above
 

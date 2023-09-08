@@ -4,7 +4,9 @@ import { SetOfCallback } from './utils';
 import { onDestroy } from 'svelte';
 
 export type TransitionAction = {
-	name: string;
+	name:
+		| string
+		| ((props: SveltekitViewTransitionEventsMap['before-start-view-transition']) => string);
 	classes?:
 		| string[]
 		| ((
@@ -173,7 +175,8 @@ function classes(
  *
  * If you pass an object instead you can specify a series of options:
  *
- * - name: required, it's the transition name that will be applied
+ * - name: required, it's the transition name that will be applied it can be either a string or a function that return a string. The function takes a navigation
+ * object as input. This is useful if you need to apply different transition names depending on where the navigation is going.
  * - classes: either an array of strings or a function that returns an array of string that will be applied
  * during the transition. The function will take a navigation object
  * - applyImmediately: by default when you specify a transition name it will only be applied when it's actually navigating
@@ -207,7 +210,8 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 							: props.applyImmediately(callback_props);
 				}
 				if (apply_immediately) {
-					node.style.setProperty('view-transition-name', props.name);
+					const name = typeof props.name === 'function' ? props.name(callback_props) : props.name;
+					node.style.setProperty('view-transition-name', name);
 					on(
 						'transition-finished',
 						() => {
@@ -228,7 +232,8 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 						: props.shouldApply(callback_props);
 			}
 			if (should_apply) {
-				node.style.setProperty('view-transition-name', props.name);
+				const name = typeof props.name === 'function' ? props.name(callback_props) : props.name;
+				node.style.setProperty('view-transition-name', name);
 				if (props.classes) {
 					classes_to_add = Array.isArray(props.classes)
 						? props.classes

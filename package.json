@@ -3,7 +3,7 @@
 	"repository": "https://github.com/paoloricciuti/sveltekit-view-transition",
 	"author": "Paolo Ricciuti",
 	"license": "MIT",
-	"version": "0.0.6",
+	"version": "0.1.0",
 	"keywords": [
 		"sveltekit",
 		"svelte",

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
-	import { setupViewTransition } from '$lib/sveltekit-view-transition.js';
+	import { setupViewTransition } from '$lib/sveltekit-view-transition';
 
 	const { transition, on, classes } = setupViewTransition();
 	console.log('newroute');

@@ -1,6 +1,6 @@
 import { onNavigate } from '$app/navigation';
 import type { OnNavigate } from '@sveltejs/kit';
-import { SetOfCallback } from './utils.js';
+import { SetOfCallback } from './utils';
 import { onDestroy } from 'svelte';
 
 export type TransitionAction = {

@@ -1,5 +1,15 @@
 # sveltekit-view-transition
 
+## 0.1.0
+
+### Minor Changes
+
+- 958f4dd: feat: Add ability to pass a function for the name of the transition
+
+### Patch Changes
+
+- 74433a2: docs: fix spaces in install instructions
+
 ## 0.0.6
 
 ### Patch Changes

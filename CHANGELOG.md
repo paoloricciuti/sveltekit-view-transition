@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.2.0
+
+### Minor Changes
+
+- c1b9c7a: automatically wrap methods in afterNavigate
+
 ## 0.1.0
 
 ### Minor Changes

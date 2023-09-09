@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { setupViewTransition } from '$lib/sveltekit-view-transition';
+	import { setupViewTransition } from '$lib';
 
 	const { transition, on } = setupViewTransition();
 	console.log('main page');

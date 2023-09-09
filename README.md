@@ -8,6 +8,10 @@ Simplified `view-transition-api` for Sveltekit.
 ![npm](https://img.shields.io/npm/dt/sveltekit-view-transition)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/sveltekit-view-transition)
 
+## Before we begin: what is a view transition?
+
+I could go in thousands of details on what `view-transitions` are but what a better way of understanding them that from the words of Jake Archibald, the main mind behind them? Here's a [wonderful article](https://developer.chrome.com/docs/web-platform/view-transitions/) from him that explains what they are and how to use them in Vanilla JS.
+
 ## Installation
 
 ```bash
@@ -307,14 +311,15 @@ This function is returned from `setupViewTransition`, and allows you to add a li
 
 There are 7 types of events you can subscribe to in order of calling:
 
-| Event Name                   | Description                                                                                                                          |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `before-navigation`          | Event called before SvelteKit start to handle the navigation the view transition has<br> already been started                        |
-| `before-navigation-complete` | Event called after SvelteKit started to handle the navigation but before it completes.<br>_The `view-transition` is still happening_ |
-| `after-navigation-complete`  | Event called after the navigation from SvelteKit has completed.<br><em>The `view-transition` is still happening</em>                 |
-| `transition-ready`           | Event called when the `view-transition` is ready, the pseudo-elements are created.                                                   |
-| `update-callback-done`       | Event called when the callback of the `view-transition` has finished running.                                                        |
-| `transition-finished`        | Event called when the `view-transition` finish and the new view is in place                                                          |
+| Event Name                     | Description                                                                                                                               |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `before-start-view-transition` | event called before the transition even start if you modify the DOM here it will be included in the "screenshot" of the `view-transition` |
+| `before-navigation`            | Event called before SvelteKit start to handle the navigation the view transition has<br> already been started                             |
+| `before-navigation-complete`   | Event called after SvelteKit started to handle the navigation but before it completes.<br>_The `view-transition` is still happening_      |
+| `after-navigation-complete`    | Event called after the navigation from SvelteKit has completed.<br><em>The `view-transition` is still happening</em>                      |
+| `transition-ready`             | Event called when the `view-transition` is ready, the pseudo-elements are created.                                                        |
+| `update-callback-done`         | Event called when the callback of the `view-transition` has finished running.                                                             |
+| `transition-finished`          | Event called when the `view-transition` finish and the new view is in place                                                               |
 
 The `on` function also returns a function that unregister the callback when called.
 

@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.2.1
+
+### Patch Changes
+
+- b848d63: fix on function called outside component initialization
+
 ## 0.2.0
 
 ### Minor Changes

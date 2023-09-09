@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.2.2
+
+### Patch Changes
+
+- f278dad: return function from `on` takes extra parameter to specify avoid wrapping
+
 ## 0.2.1
 
 ### Patch Changes

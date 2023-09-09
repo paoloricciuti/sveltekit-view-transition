@@ -144,20 +144,25 @@ function on<T extends SveltekitViewTransitionEvents>(
 ) {
 	const return_value = () => off(event, callback, avoidWrapping);
 	function on_function() {
+		function register_listener() {
+			let events = callbacks[event];
+			if (!events) {
+				callbacks[event] = new SetOfCallback<
+					SveltekitViewTransitionEventsMap[T]
+				>() as ListenerMap[T];
+				events = callbacks[event];
+			}
+			events?.add(callback);
+		}
 		// if there's a transition happening we store a function to add the listener
 		// in the queue and return the un-subscriber
 		if (is_transition_happening && !registerDuringTransition) {
 			listeners_during_transition_queue.add(() => {
-				on(event, callback, false, avoidWrapping);
+				register_listener();
 			});
 			return return_value;
 		}
-		let events = callbacks[event];
-		if (!events) {
-			callbacks[event] = new SetOfCallback<SveltekitViewTransitionEventsMap[T]>() as ListenerMap[T];
-			events = callbacks[event];
-		}
-		events?.add(callback);
+		register_listener();
 	}
 	if (avoidWrapping) {
 		on_function();

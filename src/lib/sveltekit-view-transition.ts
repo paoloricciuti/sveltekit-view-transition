@@ -142,7 +142,7 @@ function on<T extends SveltekitViewTransitionEvents>(
 	registerDuringTransition = false,
 	avoidWrapping = false,
 ) {
-	const return_value = () => off(event, callback, avoidWrapping);
+	const return_value = (avoid = avoidWrapping) => off(event, callback, avoid);
 	function on_function() {
 		function register_listener() {
 			let events = callbacks[event];
@@ -219,7 +219,7 @@ function classes(
 			if (classes) {
 				document.documentElement.classList.add(...classes);
 			} else {
-				off_finished();
+				off_finished(true);
 			}
 		},
 		false,
@@ -311,8 +311,7 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 			false,
 			true,
 		);
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		let off_finished = () => {};
+		let off_finished: ReturnType<typeof on> | undefined = undefined;
 		off_finished = on(
 			'transition-finished',
 			() => {
@@ -324,8 +323,8 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 			true,
 		);
 		return () => {
-			off_before();
-			off_finished?.();
+			off_before(true);
+			off_finished?.(true);
 		};
 	}
 	let cleanup: ReturnType<typeof setup_listeners_for_props> | undefined =

@@ -1,4 +1,4 @@
-import { onNavigate } from '$app/navigation';
+import { afterNavigate, onNavigate } from '$app/navigation';
 import type { OnNavigate } from '@sveltejs/kit';
 import { SetOfCallback } from './utils';
 import { onDestroy } from 'svelte';
@@ -92,17 +92,38 @@ function run_all_events<T extends SveltekitViewTransitionEvents>(
  * deregister from an event is also returned from the on function.
  * @param event the event name you want to deregister from
  * @param callback the callback reference you want to deregister
+ * @param avoidWrapping by default the off function is wrapped in afterNavigate so that you can
+ * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass true.
  */
 function off<T extends SveltekitViewTransitionEvents>(
 	event: T,
 	callback: (props: SveltekitViewTransitionEventsMap[T]) => void | Promise<void>,
+	avoidWrapping = false,
 ) {
-	let events = callbacks[event];
-	if (!events) {
-		callbacks[event] = new SetOfCallback<SveltekitViewTransitionEventsMap[T]>() as ListenerMap[T];
-		events = callbacks[event];
+	function off_function() {
+		let events = callbacks[event];
+		if (!events) {
+			callbacks[event] = new SetOfCallback<SveltekitViewTransitionEventsMap[T]>() as ListenerMap[T];
+			events = callbacks[event];
+		}
+		events?.delete(callback);
 	}
-	events?.delete(callback);
+	// if we need to avoid wrapping we just call the function
+	if (avoidWrapping) {
+		off_function();
+	} else {
+		// this can fail if caled inside another afterNavigate so we fallback to just call the off function
+		try {
+			afterNavigate(() => {
+				off_function();
+			});
+		} catch (e) {
+			console.warn(
+				'I tried to wrap the function within afterNavigate and failed...are you calling this inside afterNavigate?',
+			);
+			off_function();
+		}
+	}
 }
 
 /**
@@ -111,28 +132,47 @@ function off<T extends SveltekitViewTransitionEvents>(
  * @param callback The callback you want to run
  * @param registerDuringTransition if you want to register this callback even if a transition is running (if false
  * it will still be registered as soon as the transition finishes)
+ * @param avoidWrapping by default the on function is wrapped in afterNavigate so that you can
+ * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass true.
  * @returns A function to deregister the callback
  */
 function on<T extends SveltekitViewTransitionEvents>(
 	event: T,
 	callback: (props: SveltekitViewTransitionEventsMap[T]) => void,
 	registerDuringTransition = false,
+	avoidWrapping = false,
 ) {
-	const return_value = () => off(event, callback);
-	// if there's a transition happening we store a function to add the listener
-	// in the queue and return the un-subscriber
-	if (is_transition_happening && !registerDuringTransition) {
-		listeners_during_transition_queue.add(() => {
-			on(event, callback);
-		});
+	const return_value = () => off(event, callback, avoidWrapping);
+	function on_function() {
+		// if there's a transition happening we store a function to add the listener
+		// in the queue and return the un-subscriber
+		if (is_transition_happening && !registerDuringTransition) {
+			listeners_during_transition_queue.add(() => {
+				on(event, callback, false, avoidWrapping);
+			});
+			return return_value;
+		}
+		let events = callbacks[event];
+		if (!events) {
+			callbacks[event] = new SetOfCallback<SveltekitViewTransitionEventsMap[T]>() as ListenerMap[T];
+			events = callbacks[event];
+		}
+		events?.add(callback);
+	}
+	if (avoidWrapping) {
+		on_function();
 		return return_value;
 	}
-	let events = callbacks[event];
-	if (!events) {
-		callbacks[event] = new SetOfCallback<SveltekitViewTransitionEventsMap[T]>() as ListenerMap[T];
-		events = callbacks[event];
+	try {
+		afterNavigate(() => {
+			on_function();
+		});
+	} catch (e) {
+		console.warn(
+			'I tried to wrap the function within afterNavigate and failed...are you calling this inside afterNavigate?',
+		);
+		on_function();
 	}
-	events?.add(callback);
 	return return_value;
 }
 
@@ -145,6 +185,8 @@ function on<T extends SveltekitViewTransitionEvents>(
  *
  * @param to_add either a list of class that will always be applied or a function that returns an array
  * of strings. The function will get a navigation props as input to allow you to check the to, from, route id etc.
+ * @param avoidWrapping by default the classes function is wrapped in afterNavigate so that you can
+ * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass true.
  */
 function classes(
 	to_add:
@@ -152,21 +194,32 @@ function classes(
 		| ((
 				props: SveltekitViewTransitionEventsMap['before-start-view-transition'],
 		  ) => string[] | undefined),
+	avoidWrapping = false,
 ) {
 	let classes: string[] | undefined;
-	const off_finished = on('transition-finished', () => {
-		if (classes && classes.length > 0) {
-			document.documentElement.classList.remove(...classes);
-		}
-	});
-	on('before-start-view-transition', (navigation) => {
-		classes = Array.isArray(to_add) ? to_add : to_add(navigation);
-		if (classes) {
-			document.documentElement.classList.add(...classes);
-		} else {
-			off_finished();
-		}
-	});
+	const off_finished = on(
+		'transition-finished',
+		() => {
+			if (classes && classes.length > 0) {
+				document.documentElement.classList.remove(...classes);
+			}
+		},
+		false,
+		avoidWrapping,
+	);
+	on(
+		'before-start-view-transition',
+		(navigation) => {
+			classes = Array.isArray(to_add) ? to_add : to_add(navigation);
+			if (classes) {
+				document.documentElement.classList.add(...classes);
+			} else {
+				off_finished();
+			}
+		},
+		false,
+		avoidWrapping,
+	);
 }
 
 /**
@@ -218,41 +271,53 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 							node.style.setProperty('view-transition-name', null);
 						},
 						true,
+						true,
 					);
 				}
 			},
 			true,
+			true,
 		);
-		const off_before = on('before-start-view-transition', (callback_props) => {
-			let should_apply = true;
-			if (props.shouldApply != null) {
-				should_apply =
-					typeof props.shouldApply === 'boolean'
-						? props.shouldApply
-						: props.shouldApply(callback_props);
-			}
-			if (should_apply) {
-				const name = typeof props.name === 'function' ? props.name(callback_props) : props.name;
-				node.style.setProperty('view-transition-name', name);
-				if (props.classes) {
-					classes_to_add = Array.isArray(props.classes)
-						? props.classes
-						: props.classes(callback_props);
+		const off_before = on(
+			'before-start-view-transition',
+			(callback_props) => {
+				let should_apply = true;
+				if (props.shouldApply != null) {
+					should_apply =
+						typeof props.shouldApply === 'boolean'
+							? props.shouldApply
+							: props.shouldApply(callback_props);
 				}
-				if (classes_to_add) {
-					document.documentElement.classList.add(...classes_to_add);
-				} else {
-					off_finished?.();
+				if (should_apply) {
+					const name = typeof props.name === 'function' ? props.name(callback_props) : props.name;
+					node.style.setProperty('view-transition-name', name);
+					if (props.classes) {
+						classes_to_add = Array.isArray(props.classes)
+							? props.classes
+							: props.classes(callback_props);
+					}
+					if (classes_to_add) {
+						document.documentElement.classList.add(...classes_to_add);
+					} else {
+						off_finished?.();
+					}
 				}
-			}
-		});
+			},
+			false,
+			true,
+		);
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		let off_finished = () => {};
-		off_finished = on('transition-finished', () => {
-			if (classes_to_add && classes_to_add.length > 0) {
-				document.documentElement.classList.remove(...classes_to_add);
-			}
-		});
+		off_finished = on(
+			'transition-finished',
+			() => {
+				if (classes_to_add && classes_to_add.length > 0) {
+					document.documentElement.classList.remove(...classes_to_add);
+				}
+			},
+			false,
+			true,
+		);
 		return () => {
 			off_before();
 			off_finished?.();
@@ -301,18 +366,22 @@ export function setupViewTransition() {
 					.then(() => {
 						run_all_events('transition-ready', { navigation, transition });
 					})
-					.catch(console.dir);
-				transition.updateCallbackDone.then(() => {
-					run_all_events('update-callback-done', { navigation, transition });
-				});
-				transition.finished.then(() => {
-					run_all_events('transition-finished', { navigation, transition });
-					is_transition_happening = false;
-					listeners_during_transition_queue.forEach((add_listener) => {
-						add_listener();
-					});
-					listeners_during_transition_queue.clear();
-				});
+					.catch(console.error);
+				transition.updateCallbackDone
+					.then(() => {
+						run_all_events('update-callback-done', { navigation, transition });
+					})
+					.catch(console.error);
+				transition.finished
+					.then(() => {
+						run_all_events('transition-finished', { navigation, transition });
+						is_transition_happening = false;
+						listeners_during_transition_queue.forEach((add_listener) => {
+							add_listener();
+						});
+						listeners_during_transition_queue.clear();
+					})
+					.catch(console.error);
 			});
 		});
 

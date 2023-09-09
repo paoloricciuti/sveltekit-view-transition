@@ -13,7 +13,7 @@
 </script>
 
 <header use:transition={'header'}>
-	<a href="/newroute">New route</a>
+	<a href="/newroute/0">New route</a>
 </header>
 
 <ul>

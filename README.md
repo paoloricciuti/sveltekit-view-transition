@@ -309,6 +309,8 @@ So, completing the example above:
 
 This function is returned from `setupViewTransition`, and allows you to add a listener to run code during an arbitrary moment of the "lifecycle" of the view transition. It takes three arguments; the name of the event, the main callback function, and a boolean that indicates wether the callback should be added immediately _(even if there's a transition running)_ or not. This is because there are events that runs after the component has mounted, and if you add the listeners on mount specifying true as the third argument, this listeners will be called immediately. This might be useful if, for example, you want to modify the state after an incoming transition.
 
+By default the function will be internally wrapped in `afterNavigate` (to reassign the listeners even if the navigation is towards the same page) but you can pass a forth parameter as `true` to avoid wrapping the add listener in `afterNavigate`.
+
 There are 7 types of events you can subscribe to in order of calling:
 
 | Event Name                     | Description                                                                                                                               |
@@ -323,33 +325,28 @@ There are 7 types of events you can subscribe to in order of calling:
 
 The `on` function also returns a function that unregister the callback when called.
 
-This function should be called inside the `afterNavigate` hook to ensure the registration even if the navigation is towards the same component.
-
 ### `off`
 
 A function to unsubscribe a specific handle from a specific event. This will rarely be necessary given that the `on` function already returns unsubscribe.
 
-This function should be called inside the `afterNavigate` hook to ensure the registration, even if the navigation is towards the same component.
+By default the function will be internally wrapped in `afterNavigate` (to reassign the listeners even if the navigation is towards the same page) but you can pass a third parameter as `true` to avoid wrapping the remove listener in `afterNavigate`.
 
 ### `classes`
 
 Much like the `classes` function on the action, this function can be called immediately in the script tag of a component to add a specific class to the `:root` element during a navigation. It can either be a array of strings or a function that returns an array of strings. The callback provides a `navigation` object (just like the one from the action).
 
-This function should be called inside the `afterNavigate` hook to ensure the registration, even if the navigation is towards the same component.
+By default the function will be internally wrapped in `afterNavigate` (to reassign the listeners even if the navigation is towards the same page) but you can pass a second parameter as `true` to avoid wrapping the add listener in `afterNavigate`.
 
 ```svelte
 <script>
 	import { setupViewTransition } from 'sveltekit-view-transition';
-	import { afterNavigate } from '$app/navigation';
 
 	const { classes } = setupViewTransition();
 
-	afterNavigate(() => {
-		classes(({ navigation }) => {
-			if (navigation.to?.route.id === '/') {
-				return ['back'];
-			}
-		});
+	classes(({ navigation }) => {
+		if (navigation.to?.route.id === '/') {
+			return ['back'];
+		}
 	});
 </script>
 ```

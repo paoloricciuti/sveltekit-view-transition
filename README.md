@@ -355,9 +355,8 @@ By default the function will be internally wrapped in `afterNavigate` (to reassi
 
 You can find some example of usage in the [examples](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/) folder.
 
-| Example | Sveltelab | Features |
-| ------- | --------- | -------- |
-
+| Example                                                                                                            | Sveltelab                                                                                                            | Features                                                                |
+| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | [list-and-details](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/list-and-details) | [link](https://sveltelab.dev/github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/list-and-details) | entry/exit animation, dynamic name, page transition from list to detail |
 
 ## Contributing

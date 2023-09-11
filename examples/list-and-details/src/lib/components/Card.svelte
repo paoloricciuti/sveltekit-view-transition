@@ -25,70 +25,96 @@
 </script>
 
 <article>
-	<img
-		use:transition={{
-			name: 'image',
-			shouldApply,
-			applyImmediately
-		}}
-		src={image}
-		alt={title}
-	/>
-	<p
-		class="title"
-		use:transition={{
-			name: 'title',
-			shouldApply,
-			applyImmediately
-		}}
-	>
-		{title}
-	</p>
-	<strong
-		use:transition={{
-			name: 'price',
-			shouldApply,
-			applyImmediately
-		}}>{price.toFixed(2)} €</strong
-	>
-	<div class="category">{category}</div>
-	<span>
-		<Rating {...rating} />
-	</span>
+	<div class="details">
+		<div>
+			<p
+				class="title"
+				use:transition={{
+					name: 'title',
+					shouldApply,
+					applyImmediately
+				}}
+			>
+				{title}
+			</p>
+			<strong
+				use:transition={{
+					name: 'price',
+					shouldApply,
+					applyImmediately
+				}}
+				class="price"
+			>
+				{price.toFixed(2)} €
+			</strong>
+		</div>
+
+		<div class="category">{category}</div>
+
+		<span class="rating">
+			<Rating {...rating} />
+		</span>
+	</div>
+
+	<div class="product">
+		<img
+			use:transition={{
+				name: 'image',
+				shouldApply,
+				applyImmediately
+			}}
+			src={image}
+			alt={title}
+		/>
+	</div>
 </article>
 
 <style>
 	article {
-		--padding: 2rem;
-		max-width: 100%;
-		background-color: #fff;
-		padding: var(--padding);
+		height: 300px;
+		background-color: hsl(0 0% 96%);
 		border-radius: 1rem;
 		position: relative;
 		display: grid;
-		grid-template-columns: 80% 20%;
-		grid-template-rows: auto auto auto;
+		grid-template-columns: repeat(2, 1fr);
 		overflow: hidden;
+
+		& .details {
+			display: grid;
+			align-items: end;
+			padding: 1rem;
+
+			& .price {
+				color: hsl(0 0% 40%);
+			}
+
+			& .rating {
+				align-self: end;
+			}
+		}
+
+		& .product {
+			padding: 1rem;
+			display: grid;
+			place-content: center;
+			background-color: hsl(0 0% 100%);
+
+			& img {
+				aspect-ratio: 1;
+				object-fit: contain;
+			}
+		}
 	}
-	img {
-		grid-column: 2;
-		grid-row: 1/-1;
-		position: absolute;
-		inset: 0;
-		height: calc(100% + var(--padding) * 2);
-		width: 100%;
-		object-fit: cover;
-		object-position: left;
-		margin-block: calc(var(--padding) * -1);
-	}
+
 	strong {
 		color: #888;
-		grid-column: 1;
 	}
+
 	.title {
 		margin: 0;
 		font-weight: bold;
 	}
+
 	.category {
 		position: absolute;
 		top: 0;
@@ -98,9 +124,10 @@
 		font-weight: bold;
 		background-color: rebeccapurple;
 		color: white;
-		padding: 0.375rem;
+		padding: 1rem;
 		border-bottom-right-radius: 0.75rem;
 	}
+
 	span {
 		grid-column: 1;
 	}

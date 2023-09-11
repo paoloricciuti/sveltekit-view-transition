@@ -1,6 +1,25 @@
-body {
-	background-color: #eee;
+*,
+*::before,
+*::after {
 	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+:root {
+	--bg: hsl(0 0% 98%);
+	--text: hsl(0 0% 8%);
+}
+
+body {
+	color: var(--text);
+	background-color: var(--bg);
+	background-attachment: fixed;
 	font-family:
 		system-ui,
 		-apple-system,
@@ -13,4 +32,9 @@ body {
 		'Open Sans',
 		'Helvetica Neue',
 		sans-serif;
+}
+
+img {
+	width: 100%;
+	display: block;
 }

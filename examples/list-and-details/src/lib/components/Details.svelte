@@ -15,59 +15,81 @@
 	};
 </script>
 
-<article use:transition={'wrapper'}>
-	<img use:transition={'image'} src={image} alt={title} />
-	<strong use:transition={'price'}>{price.toFixed(2)} €</strong>
-	<p class="title" use:transition={'title'}>{title}</p>
-	<p class="description">{description}</p>
-	<div class="category">{category}</div>
-	<Rating {...rating} />
-	<a href="/">Back</a>
-</article>
+<div class="container">
+	<article use:transition={'wrapper'}>
+		<img use:transition={'image'} src={image} alt={title} />
+		<strong use:transition={'price'}>
+			{price.toFixed(2)} €
+		</strong>
+		<p class="title" use:transition={'title'}>{title}</p>
+		<p class="description">{description}</p>
+		<div class="category">{category}</div>
+		<Rating {...rating} />
+		<a href="/">Back</a>
+	</article>
+</div>
 
 <style>
+	.container {
+		height: 100%;
+		display: grid;
+		place-content: center;
+	}
+
 	article {
-		max-width: 100%;
-		min-height: 100vh;
-		background-color: #fff;
-		padding: 2rem;
+		max-width: 600px;
 		position: relative;
-	}
-	img {
-		max-width: min(50%, 30rem);
-		margin: auto;
-		display: block;
-	}
-	strong {
-		font-size: 3rem;
-		color: #888;
-	}
-	.title {
-		font-size: 2rem;
-		margin: 0;
-		font-weight: bold;
-	}
-	.category {
-		position: absolute;
-		top: 0;
-		left: 0;
-		text-transform: uppercase;
-		font-size: 0.75rem;
-		font-weight: bold;
-		background-color: rebeccapurple;
-		color: white;
-		padding: 0.375rem;
-		border-bottom-right-radius: 0.75rem;
-	}
-	a {
-		display: block;
-		text-align: center;
-		background-color: hsl(243, 62%, 52%);
-		padding: 0.75rem;
-		text-transform: uppercase;
-		color: white;
-		font-weight: 600;
-		text-decoration: none;
-		margin-top: 1rem;
+		padding: 2rem;
+		background-color: #fff;
+		border-radius: 1rem;
+		overflow: hidden;
+
+		& img {
+			aspect-ratio: 1;
+			object-fit: contain;
+			max-width: min(50%, 30rem);
+			margin-inline: auto;
+		}
+
+		& strong {
+			font-size: 3rem;
+			color: #888;
+		}
+
+		& .title {
+			font-size: 2rem;
+			margin: 0;
+			font-weight: bold;
+		}
+
+		& .description {
+			margin-block: 1rem;
+		}
+
+		& .category {
+			position: absolute;
+			top: 0;
+			left: 0;
+			text-transform: uppercase;
+			font-size: 0.75rem;
+			font-weight: bold;
+			background-color: rebeccapurple;
+			color: white;
+			padding: 1rem;
+			border-bottom-right-radius: 0.75rem;
+		}
+
+		& a {
+			display: block;
+			text-align: center;
+			background-color: hsl(243, 62%, 52%);
+			padding: 0.75rem;
+			text-transform: uppercase;
+			color: white;
+			font-weight: 600;
+			text-decoration: none;
+			margin-top: 1rem;
+			border-radius: 4px;
+		}
 	}
 </style>

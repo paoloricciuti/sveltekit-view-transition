@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.4.0
+
+### Minor Changes
+
+- e172bd1: change avoidWrapping to autoWrap to avoid negative booleans
+
 ## 0.3.1
 
 ### Patch Changes

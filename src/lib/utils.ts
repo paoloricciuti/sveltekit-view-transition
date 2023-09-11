@@ -1,4 +1,7 @@
 export class SetOfCallback<
 	T,
-	S extends (props: T) => void | Promise<void> = (props: T) => void | Promise<void>,
+	S extends { listener: (props: T) => void | Promise<void>; auto_clean: boolean } = {
+		listener: (props: T) => void | Promise<void>;
+		auto_clean: boolean;
+	},
 > extends Set<S> {}

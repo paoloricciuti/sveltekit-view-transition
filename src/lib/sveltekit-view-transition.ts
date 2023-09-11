@@ -20,6 +20,12 @@ export type TransitionAction = {
 		| ((props: SveltekitViewTransitionEventsMap['after-navigation-complete']) => boolean);
 };
 
+export type OnOptions = {
+	registerDuringTransition?: boolean;
+	avoidWrapping?: boolean;
+	autoClean?: boolean;
+};
+
 interface ViewTransition {
 	updateCallbackDone: Promise<void>;
 	ready: Promise<void>;
@@ -57,9 +63,10 @@ export type SveltekitViewTransitionEventsMap = {
 export type SveltekitViewTransitionEvents = keyof SveltekitViewTransitionEventsMap;
 
 type ListenerMap = {
-	[Key in SveltekitViewTransitionEvents]?: Set<
-		(props: SveltekitViewTransitionEventsMap[Key]) => void
-	>;
+	[Key in SveltekitViewTransitionEvents]?: Set<{
+		listener: (props: SveltekitViewTransitionEventsMap[Key]) => void;
+		auto_clean: boolean;
+	}>;
 };
 
 const callbacks: ListenerMap = {};
@@ -78,7 +85,7 @@ function run_all_events<T extends SveltekitViewTransitionEvents>(
 	if (events) {
 		events.forEach((callback) => {
 			try {
-				callback(props);
+				callback.listener(props);
 			} catch (e) {
 				console.error(`Error in callback for event "${event}": ${e}`);
 			}
@@ -106,7 +113,14 @@ function off<T extends SveltekitViewTransitionEvents>(
 			callbacks[event] = new SetOfCallback<SveltekitViewTransitionEventsMap[T]>() as ListenerMap[T];
 			events = callbacks[event];
 		}
-		events?.delete(callback);
+		// loop over the listeners to search for the one with the right callback
+		for (const event of events?.values() ?? []) {
+			if (event.listener === callback) {
+				// when found it delete the event and break from the loop
+				events?.delete(event);
+				break;
+			}
+		}
 	}
 	// if we need to avoid wrapping we just call the function
 	if (avoidWrapping) {
@@ -130,17 +144,19 @@ function off<T extends SveltekitViewTransitionEvents>(
  * Function used to register a callback run during the onNavigate
  * @param event the event name you want to register a callback for
  * @param callback The callback you want to run
- * @param registerDuringTransition if you want to register this callback even if a transition is running (if false
+ * @param options The options for the add listener
+ * @param options.registerDuringTransition if you want to register this callback even if a transition is running (if false
  * it will still be registered as soon as the transition finishes)
- * @param avoidWrapping by default the on function is wrapped in afterNavigate so that you can
+ * @param options.avoidWrapping by default the on function is wrapped in afterNavigate so that you can
  * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass true.
+ * @param options.autoClean wether the listener clean automatically after has been applied or it requires manual cleaning.
+ * it defaults to true
  * @returns A function to deregister the callback
  */
 function on<T extends SveltekitViewTransitionEvents>(
 	event: T,
 	callback: (props: SveltekitViewTransitionEventsMap[T]) => void,
-	registerDuringTransition = false,
-	avoidWrapping = false,
+	{ registerDuringTransition = false, avoidWrapping = false, autoClean = true }: OnOptions = {},
 ) {
 	const return_value = (avoid = avoidWrapping) => off(event, callback, avoid);
 	function on_function() {
@@ -152,7 +168,7 @@ function on<T extends SveltekitViewTransitionEvents>(
 				>() as ListenerMap[T];
 				events = callbacks[event];
 			}
-			events?.add(callback);
+			events?.add({ listener: callback, auto_clean: autoClean });
 		}
 		// if there's a transition happening we store a function to add the listener
 		// in the queue and return the un-subscriber
@@ -209,8 +225,10 @@ function classes(
 				document.documentElement.classList.remove(...classes);
 			}
 		},
-		false,
-		avoidWrapping,
+		{
+			registerDuringTransition: false,
+			avoidWrapping,
+		},
 	);
 	on(
 		'before-start-view-transition',
@@ -222,8 +240,10 @@ function classes(
 				off_finished(true);
 			}
 		},
-		false,
-		avoidWrapping,
+		{
+			registerDuringTransition: false,
+			avoidWrapping,
+		},
 	);
 }
 
@@ -257,31 +277,34 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 	}
 	function setup_listeners_for_props(props: TransitionAction) {
 		let classes_to_add: string[] | undefined;
-		on(
-			'after-navigation-complete',
-			(callback_props) => {
-				let apply_immediately = false;
-				if (props.applyImmediately != null) {
-					apply_immediately =
-						typeof props.applyImmediately === 'boolean'
-							? props.applyImmediately
-							: props.applyImmediately(callback_props);
-				}
-				if (apply_immediately) {
-					const name = typeof props.name === 'function' ? props.name(callback_props) : props.name;
-					node.style.setProperty('view-transition-name', name);
-					on(
-						'transition-finished',
-						() => {
-							node.style.setProperty('view-transition-name', null);
-						},
-						true,
-						true,
-					);
-				}
-			},
-			true,
-			true,
+		const off_functions: ReturnType<typeof on>[] = [];
+		off_functions.push(
+			on(
+				'after-navigation-complete',
+				(callback_props) => {
+					let apply_immediately = false;
+					if (props.applyImmediately != null) {
+						apply_immediately =
+							typeof props.applyImmediately === 'boolean'
+								? props.applyImmediately
+								: props.applyImmediately(callback_props);
+					}
+					if (apply_immediately) {
+						const name = typeof props.name === 'function' ? props.name(callback_props) : props.name;
+						node.style.setProperty('view-transition-name', name);
+						off_functions.push(
+							on(
+								'transition-finished',
+								() => {
+									node.style.setProperty('view-transition-name', null);
+								},
+								{ registerDuringTransition: true, avoidWrapping: true, autoClean: false },
+							),
+						);
+					}
+				},
+				{ registerDuringTransition: true, avoidWrapping: true, autoClean: false },
+			),
 		);
 		const off_before = on(
 			'before-start-view-transition',
@@ -308,9 +331,9 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 					}
 				}
 			},
-			false,
-			true,
+			{ registerDuringTransition: false, avoidWrapping: true, autoClean: false },
 		);
+		off_functions.push(off_before);
 		let off_finished: ReturnType<typeof on> | undefined = undefined;
 		off_finished = on(
 			'transition-finished',
@@ -319,12 +342,13 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 					document.documentElement.classList.remove(...classes_to_add);
 				}
 			},
-			false,
-			true,
+			{ registerDuringTransition: false, avoidWrapping: true, autoClean: false },
 		);
+		off_functions.push(off_finished);
 		return () => {
-			off_before(true);
-			off_finished?.(true);
+			off_functions.forEach((off) => {
+				off(true);
+			});
 		};
 	}
 	let cleanup: ReturnType<typeof setup_listeners_for_props> | undefined =

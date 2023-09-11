@@ -32,9 +32,15 @@
 					return 'wrapper';
 				},
 				shouldApply({ navigation }) {
+					console.log(navigation);
 					if (navigation.from?.url.pathname === navigation.to?.url.pathname) {
 						return true;
 					}
+					console.log(
+						navigation.to?.params?.id,
+						navigation.to?.params?.id === product.id.toString(),
+						product.id
+					);
 					return navigation.to?.params?.id === product.id.toString();
 				},
 				applyImmediately({ navigation }) {

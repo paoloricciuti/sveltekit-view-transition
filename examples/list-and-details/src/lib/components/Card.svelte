@@ -16,6 +16,7 @@
 	};
 
 	function shouldApply({ navigation }: { navigation: OnNavigate }) {
+		console.log(id, navigation?.to?.params?.id === id.toString());
 		return navigation?.to?.params?.id === id.toString();
 	}
 	function applyImmediately({ navigation }: { navigation: OnNavigate }) {

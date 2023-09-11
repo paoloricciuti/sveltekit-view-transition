@@ -32,12 +32,12 @@
 <style>
 	.container {
 		height: 100%;
-		display: grid;
-		place-content: center;
 	}
 
 	article {
 		max-width: 600px;
+		margin: auto;
+		margin-top: 2rem;
 		position: relative;
 		padding: 2rem;
 		background-color: #fff;
@@ -90,6 +90,13 @@
 			text-decoration: none;
 			margin-top: 1rem;
 			border-radius: 4px;
+		}
+	}
+
+	@media (max-width: 600px) {
+		article {
+			border-top-left-radius: 0;
+			margin-top: 0;
 		}
 	}
 </style>

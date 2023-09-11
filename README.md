@@ -312,7 +312,7 @@ This function is returned from `setupViewTransition`, and allows you to add a li
 | option name              | type      | meaning                                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | registerDuringTransition | `boolean` | Wether the callback should be added immediately _(even if there's a transition running)_ or not. This is because there are events that runs after the component has mounted, and if you add the listeners on mount specifying true as the third argument, this listeners will be called immediately. This might be useful if, for example, you want to modify the state after an incoming transition. |
-| avoidWrapping            | `boolean` | By default the function will be internally wrapped in `afterNavigate` (to reassign the listeners even if the navigation is towards the same page) but you can pass a forth parameter as `true` to avoid wrapping the add listener in `afterNavigate`.                                                                                                                                                 |
+| autoWrap                 | `boolean` | By default the function will be internally wrapped in `afterNavigate` (to reassign the listeners even if the navigation is towards the same page) but you can pass `autoWrap` as `false` to avoid wrapping the add listener in `afterNavigate`.                                                                                                                                                       |
 | autoClean                | `boolean` | wether the listener clean automatically after has been applied or it requires manual cleaning. It defaults to true                                                                                                                                                                                                                                                                                    |
 
 There are 7 types of events you can subscribe to in order of calling:
@@ -333,13 +333,13 @@ The `on` function also returns a function that unregister the callback when call
 
 A function to unsubscribe a specific handle from a specific event. This will rarely be necessary given that the `on` function already returns unsubscribe.
 
-By default the function will be internally wrapped in `afterNavigate` (to reassign the listeners even if the navigation is towards the same page) but you can pass a third parameter as `true` to avoid wrapping the remove listener in `afterNavigate`.
+By default the function will be internally wrapped in `afterNavigate` (to reassign the listeners even if the navigation is towards the same page) but you can pass a third parameter as `false` to avoid wrapping the remove listener in `afterNavigate`.
 
 ### `classes`
 
 Much like the `classes` function on the action, this function can be called immediately in the script tag of a component to add a specific class to the `:root` element during a navigation. It can either be a array of strings or a function that returns an array of strings. The callback provides a `navigation` object (just like the one from the action).
 
-By default the function will be internally wrapped in `afterNavigate` (to reassign the listeners even if the navigation is towards the same page) but you can pass a second parameter as `true` to avoid wrapping the add listener in `afterNavigate`.
+By default the function will be internally wrapped in `afterNavigate` (to reassign the listeners even if the navigation is towards the same page) but you can pass a second parameter as `false` to avoid wrapping the add listener in `afterNavigate`.
 
 ```svelte
 <script>
@@ -359,7 +359,7 @@ By default the function will be internally wrapped in `afterNavigate` (to reassi
 
 You can find some example of usage in the [examples](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/) folder.
 
-| Example                                                                                                            | Live semo                                       | Features                                                                |
+| Example                                                                                                            | Live demo                                       | Features                                                                |
 | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- | ----------------------------------------------------------------------- |
 | [list-and-details](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/list-and-details) | [link](https://svt-list-and-details.vercel.app) | entry/exit animation, dynamic name, page transition from list to detail |
 | [sveltegram](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/sveltegram)             | [link](https://svt-sveltegram.vercel.app)       | multiple element transitions, conditional apply based on route          |

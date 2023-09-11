@@ -22,7 +22,7 @@ export type TransitionAction = {
 
 export type OnOptions = {
 	registerDuringTransition?: boolean;
-	avoidWrapping?: boolean;
+	autoWrap?: boolean;
 	autoClean?: boolean;
 };
 
@@ -101,13 +101,13 @@ function run_all_events<T extends SveltekitViewTransitionEvents>(
  * deregister from an event is also returned from the on function.
  * @param event the event name you want to deregister from
  * @param callback the callback reference you want to deregister
- * @param avoidWrapping by default the off function is wrapped in afterNavigate so that you can
- * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass true.
+ * @param autoWrap by default the off function is wrapped in afterNavigate so that you can
+ * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass false.
  */
 function off<T extends SveltekitViewTransitionEvents>(
 	event: T,
 	callback: (props: SveltekitViewTransitionEventsMap[T]) => void | Promise<void>,
-	avoidWrapping = false,
+	autoWrap = true,
 ) {
 	function off_function() {
 		let events = callbacks[event];
@@ -125,7 +125,7 @@ function off<T extends SveltekitViewTransitionEvents>(
 		}
 	}
 	// if we need to avoid wrapping we just call the function
-	if (avoidWrapping) {
+	if (!autoWrap) {
 		off_function();
 	} else {
 		// this can fail if caled inside another afterNavigate so we fallback to just call the off function
@@ -158,9 +158,9 @@ function off<T extends SveltekitViewTransitionEvents>(
 function on<T extends SveltekitViewTransitionEvents>(
 	event: T,
 	callback: (props: SveltekitViewTransitionEventsMap[T]) => void,
-	{ registerDuringTransition = false, avoidWrapping = false, autoClean = true }: OnOptions = {},
+	{ registerDuringTransition = false, autoWrap = true, autoClean = true }: OnOptions = {},
 ) {
-	const return_value = (avoid = avoidWrapping) => off(event, callback, avoid);
+	const return_value = (wrap = autoWrap) => off(event, callback, wrap);
 	function on_function() {
 		function register_listener() {
 			let events = callbacks[event];
@@ -182,7 +182,7 @@ function on<T extends SveltekitViewTransitionEvents>(
 		}
 		register_listener();
 	}
-	if (avoidWrapping) {
+	if (!autoWrap) {
 		on_function();
 		return return_value;
 	}
@@ -208,8 +208,8 @@ function on<T extends SveltekitViewTransitionEvents>(
  *
  * @param to_add either a list of class that will always be applied or a function that returns an array
  * of strings. The function will get a navigation props as input to allow you to check the to, from, route id etc.
- * @param avoidWrapping by default the classes function is wrapped in afterNavigate so that you can
- * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass true.
+ * @param autoWrap by default the classes function is wrapped in afterNavigate so that you can
+ * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass false.
  */
 function classes(
 	to_add:
@@ -217,7 +217,7 @@ function classes(
 		| ((
 				props: SveltekitViewTransitionEventsMap['before-start-view-transition'],
 		  ) => string[] | undefined),
-	avoidWrapping = false,
+	autoWrap = true,
 ) {
 	let classes: string[] | undefined;
 	const off_finished = on(
@@ -229,7 +229,7 @@ function classes(
 		},
 		{
 			registerDuringTransition: false,
-			avoidWrapping,
+			autoWrap,
 		},
 	);
 	on(
@@ -244,7 +244,7 @@ function classes(
 		},
 		{
 			registerDuringTransition: false,
-			avoidWrapping,
+			autoWrap,
 		},
 	);
 }
@@ -300,12 +300,12 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 								() => {
 									node.style.setProperty('view-transition-name', null);
 								},
-								{ registerDuringTransition: true, avoidWrapping: true, autoClean: false },
+								{ registerDuringTransition: true, autoWrap: false, autoClean: false },
 							),
 						);
 					}
 				},
-				{ registerDuringTransition: true, avoidWrapping: true, autoClean: false },
+				{ registerDuringTransition: true, autoWrap: false, autoClean: false },
 			),
 		);
 		const off_before = on(
@@ -333,7 +333,7 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 					}
 				}
 			},
-			{ registerDuringTransition: false, avoidWrapping: true, autoClean: false },
+			{ registerDuringTransition: false, autoWrap: false, autoClean: false },
 		);
 		off_functions.push(off_before);
 		let off_finished: ReturnType<typeof on> | undefined = undefined;
@@ -344,7 +344,7 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 					document.documentElement.classList.remove(...classes_to_add);
 				}
 			},
-			{ registerDuringTransition: false, avoidWrapping: true, autoClean: false },
+			{ registerDuringTransition: false, autoWrap: false, autoClean: false },
 		);
 		off_functions.push(off_finished);
 		return () => {

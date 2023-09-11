@@ -39,8 +39,8 @@ devDependencies:
     specifier: ^3.4.3
     version: 3.5.1(postcss@8.4.29)(svelte@4.2.0)
   sveltekit-view-transition:
-    specifier: ^0.3.0
-    version: 0.3.0(@sveltejs/kit@1.24.1)(svelte@4.2.0)
+    specifier: ^0.3.1
+    version: 0.3.1(@sveltejs/kit@1.24.1)(svelte@4.2.0)
   tslib:
     specifier: ^2.4.1
     version: 2.6.2
@@ -1815,8 +1815,8 @@ packages:
       periscopic: 3.1.0
     dev: true
 
-  /sveltekit-view-transition@0.3.0(@sveltejs/kit@1.24.1)(svelte@4.2.0):
-    resolution: {integrity: sha512-KTpxPN+UH+3dQ8Z6GJbSsrYljC6V/D8GfDnCczVGhJfh4WkFTdVP3clHH6cDEo6RnL91BxSKwgK6bH8knmIpKQ==}
+  /sveltekit-view-transition@0.3.1(@sveltejs/kit@1.24.1)(svelte@4.2.0):
+    resolution: {integrity: sha512-3TRWy+E/V3uDEn8Nh3kmXkpv4wtpQ8/jzSqHZWk7kbUW8a4AHrWzTtM/kN4Zt0lCI+RpLu/IVIZnEZiQ/KBDFw==}
     peerDependencies:
       '@sveltejs/kit': ^1.20.4
       svelte: ^4.0.0

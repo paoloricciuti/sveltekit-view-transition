@@ -359,9 +359,10 @@ By default the function will be internally wrapped in `afterNavigate` (to reassi
 
 You can find some example of usage in the [examples](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/) folder.
 
-| Example                                                                                                            | Sveltelab                                                                                                            | Features                                                                |
-| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [list-and-details](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/list-and-details) | [link](https://sveltelab.dev/github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/list-and-details) | entry/exit animation, dynamic name, page transition from list to detail |
+| Example                                                                                                            | Live semo                                       | Features                                                                |
+| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- | ----------------------------------------------------------------------- |
+| [list-and-details](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/list-and-details) | [link](https://svt-list-and-details.vercel.app) | entry/exit animation, dynamic name, page transition from list to detail |
+| [sveltegram](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/sveltegram)             | [link](https://svt-sveltegram.vercel.app)       | multiple element transitions, conditional apply based on route          |
 
 ## Contributing
 

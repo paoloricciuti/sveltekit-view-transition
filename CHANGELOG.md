@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.3.0
+
+### Minor Changes
+
+- ca0f41f: remove positional options for `on` and add autoClean option
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.3.1
+
+### Patch Changes
+
+- 9ed241c: fix: avoid clearing callbacks without autoclean
+
 ## 0.3.0
 
 ### Minor Changes

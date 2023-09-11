@@ -34,7 +34,7 @@
 		position: relative;
 	}
 	img {
-		max-width: 50%;
+		max-width: min(50%, 30rem);
 		margin: auto;
 		display: block;
 	}

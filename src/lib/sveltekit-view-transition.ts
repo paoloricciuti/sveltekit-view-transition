@@ -89,8 +89,10 @@ function run_all_events<T extends SveltekitViewTransitionEvents>(
 			} catch (e) {
 				console.error(`Error in callback for event "${event}": ${e}`);
 			}
+			if (callback.auto_clean) {
+				events.delete(callback);
+			}
 		});
-		events.clear();
 	}
 }
 

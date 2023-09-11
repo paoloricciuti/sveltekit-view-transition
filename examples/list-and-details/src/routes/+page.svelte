@@ -54,22 +54,6 @@
 </ul>
 
 <style>
-	:global(body) {
-		background-color: #eee;
-		margin: 0;
-		font-family:
-			system-ui,
-			-apple-system,
-			BlinkMacSystemFont,
-			'Segoe UI',
-			Roboto,
-			Oxygen,
-			Ubuntu,
-			Cantarell,
-			'Open Sans',
-			'Helvetica Neue',
-			sans-serif;
-	}
 	form {
 		background-color: #fff;
 		display: grid;

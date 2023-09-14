@@ -321,6 +321,19 @@ function transition(node: HTMLElement, props: string | TransitionAction) {
 				if (should_apply) {
 					const name = typeof props.name === 'function' ? props.name(callback_props) : props.name;
 					node.style.setProperty('view-transition-name', name);
+					off_functions.push(
+						on(
+							'transition-finished',
+							() => {
+								node.style.setProperty('view-transition-name', null);
+							},
+							{
+								autoWrap: false,
+								registerDuringTransition: true,
+								autoClean: false,
+							},
+						),
+					);
 					if (props.classes) {
 						classes_to_add = Array.isArray(props.classes)
 							? props.classes

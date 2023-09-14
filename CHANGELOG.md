@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.4.1
+
+### Patch Changes
+
+- 383b496: remove transition name after the transition is finished
+
 ## 0.4.0
 
 ### Minor Changes

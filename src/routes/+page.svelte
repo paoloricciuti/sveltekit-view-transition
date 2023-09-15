@@ -4,11 +4,14 @@
 	import { crossfade } from 'svelte/transition';
 
 	const [send, receive] = crossfade({});
-	let clicked = true;
+	let clicked = false;
 	let clicking = false;
 </script>
 
-<BrowserWindow url="https://sveltekit-view-transition.vercel.app/{clicked ? 'docs' : ''}">
+<BrowserWindow
+	title="sveltekit-view-transition{clicked ? ' - Docs' : ''}"
+	url="https://sveltekit-view-transition.vercel.app/{clicked ? 'docs' : ''}"
+>
 	{#if !clicked}
 		<main class="absolute inset-0 grid h-[80%] place-content-center place-items-center gap-2">
 			<h1

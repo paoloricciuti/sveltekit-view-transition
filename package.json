@@ -47,7 +47,7 @@
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
 		"@playwright/test": "^1.28.1",
-		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/adapter-static": "^2.0.3",
 		"@sveltejs/kit": "^1.20.4",
 		"@sveltejs/package": "^2.0.0",
 		"@tailwindcss/typography": "^0.5.10",

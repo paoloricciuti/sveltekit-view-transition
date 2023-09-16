@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.4.2
+
+### Patch Changes
+
+- bbedbce: update readme.md
+
 ## 0.4.1
 
 ### Patch Changes

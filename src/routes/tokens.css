@@ -1,0 +1,8 @@
+:root {
+	--sk-back-3-hsl: 0, 0%, 14%;
+	--sk-code-base: hsl(45, 7%, 75%);
+	--sk-code-comment: hsl(0, 0%, 55%);
+	--sk-code-keyword: hsl(204, 88%, 65%);
+	--sk-code-function: hsl(19, 67%, 75%);
+	--sk-code-string: hsl(41, 37%, 68%);
+}

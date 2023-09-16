@@ -1,0 +1,13 @@
+html {
+	--shiki-color-text: var(--sk-code-base);
+	--shiki-color-background: hsl(var(--sk-back-3-hsl));
+	--shiki-token-constant: var(--sk-code-base);
+	--shiki-token-string: var(--sk-code-string);
+	--shiki-token-comment: var(--sk-code-comment);
+	--shiki-token-keyword: var(--sk-code-keyword);
+	--shiki-token-parameter: var(--sk-code-base);
+	--shiki-token-function: var(--sk-code-function);
+	--shiki-token-string-expression: var(--sk-code-string);
+	--shiki-token-punctuation: var(--sk-code-base);
+	--shiki-token-link: var(--sk-code-keyword);
+}

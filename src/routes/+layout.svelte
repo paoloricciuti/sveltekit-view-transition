@@ -1,11 +1,11 @@
 <script lang="ts">
 	import './global.css';
 	import './tailwind.css';
+	import './tokens.css';
+	import './shiki.css';
 </script>
 
-<main class="grid h-full place-content-center place-items-center gap-8">
-	<slot />
-</main>
+<slot />
 
 <style lang="postcss">
 	:global(body) {

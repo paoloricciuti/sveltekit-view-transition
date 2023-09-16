@@ -6,7 +6,6 @@ Simplified `view-transition-api` for Sveltekit.
 ![GitHub last commit](https://img.shields.io/github/last-commit/paoloricciuti/sveltekit-view-transition)
 ![npm](https://img.shields.io/npm/v/sveltekit-view-transition)
 ![npm](https://img.shields.io/npm/dt/sveltekit-view-transition)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/sveltekit-view-transition)
 
 ## Before we begin: what is a view transition?
 

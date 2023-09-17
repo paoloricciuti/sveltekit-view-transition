@@ -9,7 +9,27 @@ Simplified `view-transition-api` for Sveltekit.
 
 ## Before we begin: what is a view transition?
 
-I could go in thousands of details on what `view-transitions` are but what a better way of understanding them that from the words of Jake Archibald, the main mind behind them? Here's a [wonderful article](https://developer.chrome.com/docs/web-platform/view-transitions/) from him that explains what they are and how to use them in Vanilla JS.
+Svelte has kinda spoiled us: we have built in animations and transitions so that we can add a little bit of micro-interactions to our websites and apps. Do you need to animate a list reordering? `flip` comes to the rescue. Is a div moving and morphing from one list to another? `crossfade` is your friend. The web platform must have seen how much svelte developers love those kind of things and has provided us with a brand new, fully progressive enhance-able api: **[the view transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API)**. This api not only allows you to animate between two states of your application regardless of the fact that two elements are actually the same or not (something that before was only possible with third party libraries or very complex code) but allows you to animate elements that are **on different pages**!
+
+SvelteKit provides a way to hook into the navigation to allow the developer to start a view transition before the navigation and they do so with a very low level primitive. Here's how you can enable view transitions in SvelteKit
+
+```ts
+onNavigate((navigation) => {
+	if (!document.startViewTransition) return;
+	return new Promise((resolve) => {
+		document.startViewTransition(async () => {
+			resolve();
+			await navigation.complete;
+		});
+	});
+});
+```
+
+While not very complex, writing this snippets everywhere you need it can get quite tedious and sometimes based on how the `view-transition-api` works you might need to do other things like add classes or change the style of an element.
+
+`sveltekit-view-transition` aim to ease the experience of writing easy and complex transitions in SvelteKit!
+
+Before going in the details of how this library works and how to make use of it i want to leave here a [wonderful article](https://developer.chrome.com/docs/web-platform/view-transitions/) that explains what they are and how to use them in Vanilla JS from Jake Archibald, the main mind behind them.
 
 ## Installation
 

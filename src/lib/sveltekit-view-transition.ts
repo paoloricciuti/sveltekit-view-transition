@@ -96,14 +96,6 @@ function run_all_events<T extends SveltekitViewTransitionEvents>(
 	}
 }
 
-/**
- * This function is used to deregister from an event. A function that
- * deregister from an event is also returned from the on function.
- * @param event the event name you want to deregister from
- * @param callback the callback reference you want to deregister
- * @param autoWrap by default the off function is wrapped in afterNavigate so that you can
- * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass false.
- */
 function off<T extends SveltekitViewTransitionEvents>(
 	event: T,
 	callback: (props: SveltekitViewTransitionEventsMap[T]) => void | Promise<void>,
@@ -142,19 +134,6 @@ function off<T extends SveltekitViewTransitionEvents>(
 	}
 }
 
-/**
- * Function used to register a callback run during the onNavigate
- * @param event the event name you want to register a callback for
- * @param callback The callback you want to run
- * @param options The options for the add listener
- * @param options.registerDuringTransition if you want to register this callback even if a transition is running (if false
- * it will still be registered as soon as the transition finishes)
- * @param options.avoidWrapping by default the on function is wrapped in afterNavigate so that you can
- * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass true.
- * @param options.autoClean wether the listener clean automatically after has been applied or it requires manual cleaning.
- * it defaults to true
- * @returns A function to deregister the callback
- */
 function on<T extends SveltekitViewTransitionEvents>(
 	event: T,
 	callback: (props: SveltekitViewTransitionEventsMap[T]) => void,
@@ -199,18 +178,6 @@ function on<T extends SveltekitViewTransitionEvents>(
 	return return_value;
 }
 
-/**
- * Function to call during component initialization to add a class or a series of classes
- * during the navigation. This is useful to run a different types of transition when you are going
- * back to a specific page.
- *
- * The classes will be automatically removed at the end of the transition.
- *
- * @param to_add either a list of class that will always be applied or a function that returns an array
- * of strings. The function will get a navigation props as input to allow you to check the to, from, route id etc.
- * @param autoWrap by default the classes function is wrapped in afterNavigate so that you can
- * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass false.
- */
 function classes(
 	to_add:
 		| string[]
@@ -249,30 +216,7 @@ function classes(
 	);
 }
 
-/**
- * The action to specify a transition name on a specific element. You can use it on an element
- * passing a string to directly assign that specific string as view transition name.
- *
- * If you pass an object instead you can specify a series of options:
- *
- * - name: required, it's the transition name that will be applied it can be either a string or a function that return a string. The function takes a navigation
- * object as input. This is useful if you need to apply different transition names depending on where the navigation is going.
- * - classes: either an array of strings or a function that returns an array of string that will be applied
- * during the transition. The function will take a navigation object
- * - applyImmediately: by default when you specify a transition name it will only be applied when it's actually navigating
- * following the suggestion from Jake Archibald himself (the creator of the view transition api) https://twitter.com/jaffathecake/status/1697541871847748098?s=20
- * that you should not add transition names to everything but only to the elements involved in the transition. Sometimes tho you want to
- * add a transition name immediately (for example when you are coming back from a detail page and you want to animate back an image in the list).
- * applyImmediately is either a boolean or a function that take the navigation object (please note that this is the navigation object) from
- * the previous page so the `from` will be the page that is navigating to this page and the `to` will be this page) and returns a boolean.
- * - shouldApply: as mentioned above this can be either a boolean or a function that takes a navigation object (this time the `from` is
- * this page and the `to` is the page you are navigating to) and return a boolean. If the boolean is true the transition name will be applied.
- * This is useful when you want to navigate from a list to a detail.
- *
- * @param node The element to apply the action to
- * @param props either a string for a simple view transition name or a set of options
- */
-function transition(node: HTMLElement, props: string | TransitionAction) {
+function transition(node: HTMLElement | SVGElement, props: string | TransitionAction) {
 	if (typeof props === 'string') {
 		node.style.setProperty('view-transition-name', props);
 		return;
@@ -434,9 +378,65 @@ export function setupViewTransition() {
 	}
 
 	return {
+		/**
+		 * Function used to register a callback run during the onNavigate
+		 * @param event the event name you want to register a callback for
+		 * @param callback The callback you want to run
+		 * @param options The options for the add listener
+		 * @param options.registerDuringTransition if you want to register this callback even if a transition is running (if false
+		 * it will still be registered as soon as the transition finishes)
+		 * @param options.avoidWrapping by default the on function is wrapped in afterNavigate so that you can
+		 * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass true.
+		 * @param options.autoClean wether the listener clean automatically after has been applied or it requires manual cleaning.
+		 * it defaults to true
+		 * @returns A function to deregister the callback
+		 */
 		on,
+		/**
+		 * This function is used to deregister from an event. A function that
+		 * deregister from an event is also returned from the on function.
+		 * @param event the event name you want to deregister from
+		 * @param callback the callback reference you want to deregister
+		 * @param autoWrap by default the off function is wrapped in afterNavigate so that you can
+		 * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass false.
+		 */
 		off,
+		/**
+		 * The action to specify a transition name on a specific element. You can use it on an element
+		 * passing a string to directly assign that specific string as view transition name.
+		 *
+		 * If you pass an object instead you can specify a series of options:
+		 *
+		 * - name: required, it's the transition name that will be applied it can be either a string or a function that return a string. The function takes a navigation
+		 * object as input. This is useful if you need to apply different transition names depending on where the navigation is going.
+		 * - classes: either an array of strings or a function that returns an array of string that will be applied
+		 * during the transition. The function will take a navigation object
+		 * - applyImmediately: by default when you specify a transition name it will only be applied when it's actually navigating
+		 * following the suggestion from Jake Archibald himself (the creator of the view transition api) https://twitter.com/jaffathecake/status/1697541871847748098?s=20
+		 * that you should not add transition names to everything but only to the elements involved in the transition. Sometimes tho you want to
+		 * add a transition name immediately (for example when you are coming back from a detail page and you want to animate back an image in the list).
+		 * applyImmediately is either a boolean or a function that take the navigation object (please note that this is the navigation object) from
+		 * the previous page so the `from` will be the page that is navigating to this page and the `to` will be this page) and returns a boolean.
+		 * - shouldApply: as mentioned above this can be either a boolean or a function that takes a navigation object (this time the `from` is
+		 * this page and the `to` is the page you are navigating to) and return a boolean. If the boolean is true the transition name will be applied.
+		 * This is useful when you want to navigate from a list to a detail.
+		 *
+		 * @param node The element to apply the action to
+		 * @param props either a string for a simple view transition name or a set of options
+		 */
 		transition,
+		/**
+		 * Function to call during component initialization to add a class or a series of classes
+		 * during the navigation. This is useful to run a different types of transition when you are going
+		 * back to a specific page.
+		 *
+		 * The classes will be automatically removed at the end of the transition.
+		 *
+		 * @param to_add either a list of class that will always be applied or a function that returns an array
+		 * of strings. The function will get a navigation props as input to allow you to check the to, from, route id etc.
+		 * @param autoWrap by default the classes function is wrapped in afterNavigate so that you can
+		 * avoid unnecessarily wrap it every time. If you need to avoid this behavior you can pass false.
+		 */
 		classes,
 	};
 }

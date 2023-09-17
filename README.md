@@ -31,6 +31,9 @@ While not very complex, writing this snippets everywhere you need it can get qui
 
 Before going in the details of how this library works and how to make use of it i want to leave here a [wonderful article](https://developer.chrome.com/docs/web-platform/view-transitions/) that explains what they are and how to use them in Vanilla JS from Jake Archibald, the main mind behind them.
 
+> **Warning**
+> While view transitions are cool please don't overuse them as having too much motion can worsten your users experience rather than enhance it. Also **PLEASE** respect your users preference for reduced motion with `@media (prefers-reduced-motion)`
+
 ## Installation
 
 ```bash

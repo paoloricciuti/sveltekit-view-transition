@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.4.3
+
+### Patch Changes
+
+- 70f9ad8: fix typing for action and move jsdoc to return value
+
 ## 0.4.2
 
 ### Patch Changes

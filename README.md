@@ -77,8 +77,8 @@ Optionally, the default animation can be modified via `::view-transition-old(roo
 	}
 
 	/* Or, just modify the duration. */
-	:gloabl(::view-transition-old(root)),
-	:gloabl(::view-transition-new(root)) {
+	:global(::view-transition-old(root)),
+	:global(::view-transition-new(root)) {
 		animation-duration: 2s;
 	}
 </style>
@@ -107,7 +107,7 @@ One way to do this is with `transition`, a svelte [action](https://svelte.dev/tu
 
 <style>
 	:global(::view-transition-old(header)),
-	:gloibal(::view-transition-new(header)) {
+	:global(::view-transition-new(header)) {
 		/* ... */
 	}
 </style>
@@ -163,7 +163,7 @@ This can be achieved by returning an array, i.e. `["back"]`, to our `classes` ca
 
 Now, we can target `.back::view-transition-old(back)` and `.back::view-transition-new(back)` in our CSS and those transitions will only be applied when navigating to the home page `/`.
 
-In the example above, you can see we're destrucuring `navigation` from the provided `OnNavigate` object _(the same object that sveltekit will pass to the `onNavigate` function)_. This object contains a lot of useful information, including the page you are navigating to, allowing us to apply classes conditionally based on the navigation.
+In the example above, you can see we're destructuring `navigation` from the provided `OnNavigate` object _(the same object that sveltekit will pass to the `onNavigate` function)_. This object contains a lot of useful information, including the page you are navigating to, allowing us to apply classes conditionally based on the navigation.
 
 <details>
 <summary>Click here to see the full <code>Navigation</code> interface.</summary>
@@ -378,10 +378,10 @@ By default the function will be internally wrapped in `afterNavigate` (to reassi
 
 You can find some example of usage in the [examples](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/) folder.
 
-| Example                                                                                                            | Live demo                                       | Features                                                                |
-| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- | ----------------------------------------------------------------------- |
-| [list-and-details](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/list-and-details) | [link](https://svt-list-and-details.vercel.app) | entry/exit animation, dynamic name, page transition from list to detail |
-| [sveltegram](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/sveltegram)             | [link](https://svt-sveltegram.vercel.app)       | multiple element transitions, conditional apply based on route          |
+| Example                                                                                                            | SvelteLab link                                                                                                       | Live demo                                       | Features                                                                |
+| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------- |
+| [list-and-details](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/list-and-details) | [link](https://sveltelab.dev/github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/list-and-details) | [link](https://svt-list-and-details.vercel.app) | entry/exit animation, dynamic name, page transition from list to detail |
+| [sveltegram](https://github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/sveltegram)             | [link](https://sveltelab.dev/github.com/paoloricciuti/sveltekit-view-transition/tree/main/examples/sveltegram)       | [link](https://svt-sveltegram.vercel.app)       | multiple element transitions, conditional apply based on route          |
 
 ## Contributing
 

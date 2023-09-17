@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.4.4
+
+### Patch Changes
+
+- 1aaf46b: fix typos and add sveltelab links
+
 ## 0.4.3
 
 ### Patch Changes

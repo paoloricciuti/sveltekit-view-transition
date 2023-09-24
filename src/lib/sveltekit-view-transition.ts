@@ -2,6 +2,7 @@ import { afterNavigate, onNavigate } from '$app/navigation';
 import type { OnNavigate } from '@sveltejs/kit';
 import { SetOfCallback } from './utils';
 import { onDestroy } from 'svelte';
+import { browser } from '$app/environment';
 
 export type TransitionAction = {
 	name:
@@ -334,9 +335,10 @@ function transition(node: HTMLElement | SVGElement, props: string | TransitionAc
 
 export function setupViewTransition() {
 	// only register once the onNavigate
-	if (on_navigate_registered === 0) {
+	if (on_navigate_registered === 0 && browser && document.startViewTransition) {
 		on_navigate_registered++;
 		onNavigate((navigation) => {
+			// this should never happen but better be safe than sorry
 			if (!document.startViewTransition) return;
 			return new Promise((resolve) => {
 				run_all_events('before-start-view-transition', { navigation });

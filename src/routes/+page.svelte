@@ -67,7 +67,9 @@
 					</span>
 				</a>
 				<p>
-					<a class="flex items-center gap-2" href="https://twitter.com/paoloricciuti"
+					<a
+						class="flex items-center gap-2"
+						href="https://github.com/paoloricciuti/sveltekit-view-transition"
 						><svg
 							in:receive={{
 								key: 'github',

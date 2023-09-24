@@ -7,7 +7,7 @@
 
 <header class="sticky top-0 flex justify-between bg-slate-900 p-4">
 	<h1><code use:transition={'title'} class="text-2xl">`sveltekit-view-transition`</code></h1>
-	<a href="https://twitter.com/paoloricciuti"
+	<a href="https://github.com/paoloricciuti/sveltekit-view-transition"
 		><svg
 			use:transition={'github'}
 			aria-hidden="true"

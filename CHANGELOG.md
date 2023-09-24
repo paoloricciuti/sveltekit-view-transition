@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.4.6
+
+### Patch Changes
+
+- 6e6072c: avoid adding onNavigate if startViewTransition is not in document
+
 ## 0.4.5
 
 ### Patch Changes

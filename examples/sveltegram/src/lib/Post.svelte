@@ -3,6 +3,7 @@
 	import type { Photo, User } from '$lib/fake-data';
 	import type { OnNavigate } from '@sveltejs/kit';
 	import { setupViewTransition } from 'sveltekit-view-transition';
+	import type { TransitionActionFunctions } from 'sveltekit-view-transition';
 
 	const { transition } = setupViewTransition();
 
@@ -13,12 +14,15 @@
 	export let user: User;
 	type $$Props = Photo;
 
-	function shouldApply({ navigation }: { navigation: OnNavigate }) {
+	const shouldApply: TransitionActionFunctions['shouldApply'] = ({ navigation }) => {
 		return navigation.to?.params?.id === id.toString();
-	}
-	function applyImmediately({ navigation }: { navigation: OnNavigate }) {
-		return navigation.from?.params?.id === id.toString();
-	}
+	};
+	const applyImmediately: TransitionActionFunctions['applyImmediately'] = ({
+		navigation,
+		isInViewport
+	}) => {
+		return isInViewport && navigation.from?.params?.id === id.toString();
+	};
 
 	$: comments_num = comments.filter((comment) => comment.photo_id === id).length;
 	$: comments_sentence = `comment${comments_num !== 1 ? 's' : ''}`;

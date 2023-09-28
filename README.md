@@ -133,6 +133,8 @@ Let's take a look at each of these options in more detail:
 
 The `view-transition-name` -- the only required parameter. It can be a `string` _or_ a `function` that takes a navigation object and returns a string, and will be applied to the target element during the transition. This is equivalent to setting the style property `view-transition-name` on an element.
 
+Apart from the `navigation` object this function also receive the `HTMLElement` of the action (it's the property `node` inside the prop object) and a boolean that express if this element is actually in the viewport at the time of the transition (it's the property `isInViewport` inside the prop object). This allow you to easily skip a transition if the element is not in the viewport to avoid having elements that fly off the viewport (inspired by this [tweet by Ryan Florence](https://x.com/ryanflorence/status/1706686168837054754))
+
 ### `classes`
 
 Either an array of strings, or a function that returns an array of strings. These classes will be applied as classnames to the root element during the transition.
@@ -140,6 +142,8 @@ Either an array of strings, or a function that returns an array of strings. Thes
 To demonstrate this, let's assume we want to apply a unique transition to our header anytime our "back" button is clicked.
 
 This can be achieved by returning an array, i.e. `["back"]`, to our `classes` callback.
+
+Apart from the `navigation` object this function also receive the `HTMLElement` of the action (it's the property `node` inside the prop object) and a boolean that express if this element is actually in the viewport at the time of the transition (it's the property `isInViewport` inside the prop object). This allow you to easily skip a transition if the element is not in the viewport to avoid having elements that fly off the viewport (inspired by this [tweet by Ryan Florence](https://x.com/ryanflorence/status/1706686168837054754))
 
 ```svelte
 <script>
@@ -242,6 +246,8 @@ By default, the transition name you provide will only be applied during the actu
 
 `applyImmediately` is either a `boolean` or a `function` that take the `navigation` object _(please note that this is the navigation object from the previous page, so the `from` will be the page that is navigating to the current page, and the `to` will be the current page)_ and returns a boolean.
 
+Apart from the `navigation` object this function also receive the `HTMLElement` of the action (it's the property `node` inside the prop object) and a boolean that express if this element is actually in the viewport at the time of the transition (it's the property `isInViewport` inside the prop object). This allow you to easily skip a transition if the element is not in the viewport to avoid having elements that fly off the viewport (inspired by this [tweet by Ryan Florence](https://x.com/ryanflorence/status/1706686168837054754))
+
 Here's a simple example of this in action:
 
 ```svelte
@@ -287,6 +293,8 @@ In this example, when we navigate back from the `/post/1` page, the title will s
 As mentioned above, this can be either a `boolean` or a `function` that takes a `navigation` object _(this time the `from` is this page and the `to` is the page you are navigating to)_ and returns a `boolean`. If the return value is `true` the transition name will be applied, otherwise it will not. This is useful when, for example, you want to navigate from a list to a detail.
 
 NB: the default is true so if you don't pass `shouldApply` the transition name will be applied every time.
+
+Apart from the `navigation` object this function also receive the `HTMLElement` of the action (it's the property `node` inside the prop object) and a boolean that express if this element is actually in the viewport at the time of the transition (it's the property `isInViewport` inside the prop object). This allow you to easily skip a transition if the element is not in the viewport to avoid having elements that fly off the viewport (inspired by this [tweet by Ryan Florence](https://x.com/ryanflorence/status/1706686168837054754))
 
 So, completing the example above:
 

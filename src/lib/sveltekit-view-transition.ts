@@ -4,21 +4,30 @@ import { SetOfCallback } from './utils';
 import { onDestroy } from 'svelte';
 import { browser } from '$app/environment';
 
+export type TransitionActionFunctionProps<TEvent extends keyof SveltekitViewTransitionEventsMap> =
+	SveltekitViewTransitionEventsMap[TEvent] & {
+		node: HTMLElement | SVGElement;
+		isInViewport: boolean;
+	};
+
 export type TransitionAction = {
-	name:
-		| string
-		| ((props: SveltekitViewTransitionEventsMap['before-start-view-transition']) => string);
+	name: string | ((props: TransitionActionFunctionProps<'before-start-view-transition'>) => string);
 	classes?:
 		| string[]
 		| ((
-				props: SveltekitViewTransitionEventsMap['before-start-view-transition'],
+				props: TransitionActionFunctionProps<'before-start-view-transition'>,
 		  ) => string[] | undefined);
 	shouldApply?:
 		| boolean
-		| ((props: SveltekitViewTransitionEventsMap['before-start-view-transition']) => boolean);
+		| ((props: TransitionActionFunctionProps<'before-start-view-transition'>) => boolean);
 	applyImmediately?:
 		| boolean
-		| ((props: SveltekitViewTransitionEventsMap['after-navigation-complete']) => boolean);
+		| ((props: TransitionActionFunctionProps<'after-navigation-complete'>) => boolean);
+};
+
+export type TransitionActionFunctions = {
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	[Key in keyof TransitionAction]-?: Extract<TransitionAction[Key], Function>;
 };
 
 export type OnOptions = {
@@ -229,15 +238,19 @@ function transition(node: HTMLElement | SVGElement, props: string | TransitionAc
 			on(
 				'after-navigation-complete',
 				(callback_props) => {
+					const { top } = node.getBoundingClientRect();
+					const is_in_viewport = top < window.innerHeight + window.scrollY;
+					const props_for_callback = { ...callback_props, node, isInViewport: is_in_viewport };
 					let apply_immediately = false;
 					if (props.applyImmediately != null) {
 						apply_immediately =
 							typeof props.applyImmediately === 'boolean'
 								? props.applyImmediately
-								: props.applyImmediately(callback_props);
+								: props.applyImmediately(props_for_callback);
 					}
 					if (apply_immediately) {
-						const name = typeof props.name === 'function' ? props.name(callback_props) : props.name;
+						const name =
+							typeof props.name === 'function' ? props.name(props_for_callback) : props.name;
 						node.style.setProperty('view-transition-name', name);
 						off_functions.push(
 							on(
@@ -257,14 +270,18 @@ function transition(node: HTMLElement | SVGElement, props: string | TransitionAc
 			'before-start-view-transition',
 			(callback_props) => {
 				let should_apply = true;
+				const { top } = node.getBoundingClientRect();
+				const is_in_viewport = top < window.innerHeight + window.scrollY;
+				const props_for_callback = { ...callback_props, node, isInViewport: is_in_viewport };
 				if (props.shouldApply != null) {
 					should_apply =
 						typeof props.shouldApply === 'boolean'
 							? props.shouldApply
-							: props.shouldApply(callback_props);
+							: props.shouldApply(props_for_callback);
 				}
 				if (should_apply) {
-					const name = typeof props.name === 'function' ? props.name(callback_props) : props.name;
+					const name =
+						typeof props.name === 'function' ? props.name(props_for_callback) : props.name;
 					node.style.setProperty('view-transition-name', name);
 					off_functions.push(
 						on(
@@ -282,7 +299,7 @@ function transition(node: HTMLElement | SVGElement, props: string | TransitionAc
 					if (props.classes) {
 						classes_to_add = Array.isArray(props.classes)
 							? props.classes
-							: props.classes(callback_props);
+							: props.classes(props_for_callback);
 					}
 					if (classes_to_add) {
 						document.documentElement.classList.add(...classes_to_add);

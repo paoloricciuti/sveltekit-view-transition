@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.5.0
+
+### Minor Changes
+
+- 6c32491: provide node and isInViewport arguments to action functions
+
 ## 0.4.6
 
 ### Patch Changes

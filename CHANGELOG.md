@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.5.1
+
+### Patch Changes
+
+- fd0a8fb: fix readme information
+
 ## 0.5.0
 
 ### Minor Changes

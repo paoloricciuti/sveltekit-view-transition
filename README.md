@@ -267,7 +267,7 @@ Here's a simple example of this in action:
 				 * in the post/[id] page we have a matching title transition name
 				 */
 				name: 'title',
-				applyImmediately(navigation) {
+				applyImmediately({ navigation }) {
 					// this will apply the title view transition to this element
 					// only if it's the one that matches the id we are coming from
 					// so for example if we were visiting /post/1 and this is the
@@ -317,10 +317,10 @@ So, completing the example above:
 				 * if and when the shouldApply function returns true
 				 */
 				name: 'title',
-				applyImmediately(navigation) {
+				applyImmediately({ navigation }) {
 					return navigation?.from?.params?.id === post.id.toString();
 				},
-				shouldApply(navigation) {
+				shouldApply({ navigation }) {
 					// if the params.id i'm navigating to is equal to the id of the post
 					// we add the title transition name.
 					return navigation?.to?.params?.id === post.id.toString();

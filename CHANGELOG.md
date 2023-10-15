@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.5.2
+
+### Patch Changes
+
+- 7aaa3e4: fix: clean the listeners immediately in should apply
+
 ## 0.5.1
 
 ### Patch Changes

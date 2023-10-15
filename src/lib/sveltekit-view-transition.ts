@@ -324,7 +324,7 @@ function transition(node: HTMLElement | SVGElement, props: string | TransitionAc
 		off_functions.push(off_finished);
 		return () => {
 			off_functions.forEach((off) => {
-				off(true);
+				off(false);
 			});
 		};
 	}

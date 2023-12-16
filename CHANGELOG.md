@@ -1,5 +1,11 @@
 # sveltekit-view-transition
 
+## 0.5.3
+
+### Patch Changes
+
+- 9a01377: fix: update peer deps
+
 ## 0.5.2
 
 ### Patch Changes

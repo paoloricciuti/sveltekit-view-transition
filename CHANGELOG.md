@@ -1,5 +1,15 @@
 # sveltekit-view-transition
 
+## 0.6.0
+
+### Minor Changes
+
+- 416e32f: feat: allow `transition` to be used as an attachment
+
+### Patch Changes
+
+- d28089a: fix: support SvelteKit 3
+
 ## 0.5.3
 
 ### Patch Changes

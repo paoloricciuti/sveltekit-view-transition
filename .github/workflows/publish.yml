@@ -6,6 +6,11 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  contents: write # push the release branch and tags
+  pull-requests: write # open the "Version Packages" PR
+  id-token: write # npm trusted publishing (OIDC)
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -27,4 +32,3 @@ jobs:
           publish: pnpm run changeset:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

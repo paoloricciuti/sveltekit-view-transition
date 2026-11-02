@@ -1,6 +1,9 @@
 {
 	"name": "sveltekit-view-transition",
-	"repository": "https://github.com/paoloricciuti/sveltekit-view-transition",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/paoloricciuti/sveltekit-view-transition.git"
+	},
 	"author": "Paolo Ricciuti",
 	"license": "MIT",
 	"version": "0.5.3",

@@ -91,7 +91,7 @@ Optionally, the default animation can be modified via `::view-transition-old(roo
 
 It's often useful to give specific parts of the page their own unique view transitions. We can do this by setting an element's `view-transition-name`.
 
-One way to do this is with `transition`, a svelte [action](https://svelte.dev/tutorial/actions) returned by `setupViewTransition`.
+One way to do this is with `transition`, a svelte [attachment](https://svelte.dev/docs/svelte/@attach) returned by `setupViewTransition`.
 
 `transition` accepts a string representing the `view-transition-name` that should be assigned to the element using it:
 
@@ -102,7 +102,7 @@ One way to do this is with `transition`, a svelte [action](https://svelte.dev/tu
 	const { transition } = setupViewTransition();
 </script>
 
-<header use:transition={'header'}>
+<header {@attach transition('header')}>
 	<!-- links -->
 </header>
 
@@ -118,9 +118,12 @@ One way to do this is with `transition`, a svelte [action](https://svelte.dev/tu
 
 As you can see, the header's view transition can now be modified via `::view-transition-old(header)` and `::view-transition-new(header)`.
 
+> [!NOTE]
+> Attachments require `svelte@5.29` or later. If you are on an older version of Svelte (or simply prefer it) `transition` can also be used as an [action](https://svelte.dev/docs/svelte/use) with the exact same options: `use:transition={'header'}` is equivalent to `{@attach transition('header')}`.
+
 ## Additional Options
 
-If you want to be a bit more creative with the transitions, you can pass an `object` to the `transition` action instead of a `string`. This object accepts the following options:
+If you want to be a bit more creative with the transitions, you can pass an `object` to `transition` instead of a `string`. This object accepts the following options:
 
 - `name`: the view-transition-name _(required)_
 - `classes`: classnames to apply to the target element during the transition. An array of strings or a function that returns one.
@@ -153,14 +156,14 @@ Apart from the `navigation` object this function also receive the `HTMLElement` 
 </script>
 
 <header
-	use:transition={{
+	{@attach transition({
 		name: 'header',
 		classes({ navigation }) {
 			if (navigation.to?.route?.id === '/') {
 				return ['back'];
 			}
 		},
-	}}
+	})}
 >
 	<a href="/">Back</a>
 </header>
@@ -262,7 +265,7 @@ Here's a simple example of this in action:
 <ul>
 	{#each data.posts as post (post.id)}
 		<li
-			use:transition={{
+			{@attach transition({
 				/**
 				 * in the post/[id] page we have a matching title transition name
 				 */
@@ -276,7 +279,7 @@ Here's a simple example of this in action:
 					// from post/1 to /
 					return navigation?.from?.params?.id === post.id.toString();
 				},
-			}}
+			})}
 		>
 			<a href="/post/{post.id}">{post.title}</a>
 		</li>
@@ -310,7 +313,7 @@ So, completing the example above:
 <ul>
 	{#each data.posts as post (post.id)}
 		<li
-			use:transition={{
+			{@attach transition({
 				/**
 				 * in the post/[id] page we have a matching title transition name. Note that
 				 * the transition name will only be applied moments before the actual transition
@@ -325,7 +328,7 @@ So, completing the example above:
 					// we add the title transition name.
 					return navigation?.to?.params?.id === post.id.toString();
 				},
-			}}
+			})}
 		>
 			<a href="/post/{post.id}">{post.title}</a>
 		</li>

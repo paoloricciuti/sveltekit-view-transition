@@ -6,10 +6,10 @@
 </script>
 
 <header class="sticky top-0 flex justify-between bg-slate-900 p-4">
-	<h1><code use:transition={'title'} class="text-2xl">`sveltekit-view-transition`</code></h1>
+	<h1><code {@attach transition('title')} class="text-2xl">`sveltekit-view-transition`</code></h1>
 	<a href="https://github.com/paoloricciuti/sveltekit-view-transition"
 		><svg
-			use:transition={'github'}
+			{@attach transition('github')}
 			aria-hidden="true"
 			viewBox="0 0 16 16"
 			version="1.1"

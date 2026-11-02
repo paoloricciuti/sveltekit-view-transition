@@ -27,7 +27,7 @@
 					}}
 					class="text-fluid-xl"
 				>
-					<code use:transition={'title'}>`sveltekit-view-transition`</code>
+					<code {@attach transition('title')}>`sveltekit-view-transition`</code>
 				</h1>
 				<a
 					in:receive={{
@@ -77,7 +77,7 @@
 							out:send={{
 								key: 'github',
 							}}
-							use:transition={'github'}
+							{@attach transition('github')}
 							aria-hidden="true"
 							viewBox="0 0 16 16"
 							version="1.1"
@@ -108,7 +108,7 @@
 						}}
 						class="inline text-fluid-xl"
 					>
-						<code use:transition={'title'}>`sveltekit-view-transition`</code>
+						<code {@attach transition('title')}>`sveltekit-view-transition`</code>
 					</h1>
 					<a href="https://twitter.com/paoloricciuti"
 						><svg
@@ -118,7 +118,7 @@
 							out:send={{
 								key: 'github',
 							}}
-							use:transition={'github'}
+							{@attach transition('github')}
 							aria-hidden="true"
 							viewBox="0 0 16 16"
 							version="1.1"

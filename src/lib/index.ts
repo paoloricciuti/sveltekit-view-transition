@@ -8,5 +8,7 @@ export type {
 	SveltekitViewTransitionEventsMap,
 	TransitionAction,
 	TransitionActionFunctionProps,
+	TransitionActionReturn,
+	TransitionAttachment,
 	TransitionActionFunctions,
 } from './sveltekit-view-transition';

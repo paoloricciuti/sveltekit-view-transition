@@ -6,7 +6,7 @@
 	},
 	"author": "Paolo Ricciuti",
 	"license": "MIT",
-	"version": "0.5.3",
+	"version": "0.6.0",
 	"keywords": [
 		"sveltekit",
 		"svelte",

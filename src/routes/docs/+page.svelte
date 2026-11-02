@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Readme from '../../../README.md';
-	import { setupViewTransition } from '$lib';
+	import { setupViewTransition } from '#lib';
 
 	const { transition } = setupViewTransition();
 </script>

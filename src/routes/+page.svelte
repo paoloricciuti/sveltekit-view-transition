@@ -2,7 +2,7 @@
 	import BrowserWindow from '$components/BrowserWindow.svelte';
 	import Mouse from '$components/Mouse.svelte';
 	import { crossfade } from 'svelte/transition';
-	import { setupViewTransition } from '$lib';
+	import { setupViewTransition } from '#lib';
 
 	const { transition } = setupViewTransition();
 

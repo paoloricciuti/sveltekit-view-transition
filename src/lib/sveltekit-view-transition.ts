@@ -1,8 +1,10 @@
 import { afterNavigate, onNavigate } from '$app/navigation';
-import type { OnNavigate } from '@sveltejs/kit';
 import { SetOfCallback } from './utils';
 import { onDestroy } from 'svelte';
-import { browser } from '$app/environment';
+
+// `OnNavigate` is exported from `@sveltejs/kit` in v1/v2 but from `$app/navigation` in v3
+// so we derive it from `onNavigate` to support every version
+type OnNavigate = Parameters<Parameters<typeof onNavigate>[0]>[0];
 
 export type TransitionActionFunctionProps<TEvent extends keyof SveltekitViewTransitionEventsMap> =
 	SveltekitViewTransitionEventsMap[TEvent] & {
@@ -18,11 +20,9 @@ export type TransitionAction = {
 				props: TransitionActionFunctionProps<'before-start-view-transition'>,
 		  ) => string[] | undefined);
 	shouldApply?:
-		| boolean
-		| ((props: TransitionActionFunctionProps<'before-start-view-transition'>) => boolean);
+		boolean | ((props: TransitionActionFunctionProps<'before-start-view-transition'>) => boolean);
 	applyImmediately?:
-		| boolean
-		| ((props: TransitionActionFunctionProps<'after-navigation-complete'>) => boolean);
+		boolean | ((props: TransitionActionFunctionProps<'after-navigation-complete'>) => boolean);
 };
 
 export type TransitionActionFunctions = {
@@ -132,7 +132,9 @@ function off<T extends SveltekitViewTransitionEvents>(
 	} else {
 		// this can fail if caled inside another afterNavigate so we fallback to just call the off function
 		try {
-			afterNavigate(() => {
+			afterNavigate(({ shallow, type }) => {
+				if (shallow && type === 'goto') return;
+
 				off_function();
 			});
 		} catch (e) {
@@ -176,7 +178,9 @@ function on<T extends SveltekitViewTransitionEvents>(
 		return return_value;
 	}
 	try {
-		afterNavigate(() => {
+		afterNavigate(({ shallow, type }) => {
+			if (shallow && type === 'goto') return;
+
 			on_function();
 		});
 	} catch (e) {
@@ -352,9 +356,15 @@ function transition(node: HTMLElement | SVGElement, props: string | TransitionAc
 
 export function setupViewTransition() {
 	// only register once the onNavigate
-	if (on_navigate_registered === 0 && browser && document.startViewTransition) {
+	if (
+		on_navigate_registered === 0 &&
+		typeof document !== 'undefined' &&
+		document.startViewTransition
+	) {
 		on_navigate_registered++;
 		onNavigate((navigation) => {
+			if (navigation.shallow && navigation.type === 'goto') return;
+
 			// this should never happen but better be safe than sorry
 			if (!document.startViewTransition) return;
 			return new Promise((resolve) => {

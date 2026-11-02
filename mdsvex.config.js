@@ -7,7 +7,7 @@ const config = defineConfig({
 	extensions: ['.svelte.md', '.md', '.svx'],
 	highlight: {
 		highlighter(code, lang) {
-			const html = highlighter.codeToHtml(code, { lang });
+			const html = highlighter.codeToHtml(code, { lang: lang ?? undefined });
 			return `{@html \`${html
 				.replace('%ts%', 'ts')
 				.replaceAll('`', '\\`')

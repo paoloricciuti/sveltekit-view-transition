@@ -25,6 +25,13 @@ export type TransitionAction = {
 		boolean | ((props: TransitionActionFunctionProps<'after-navigation-complete'>) => boolean);
 };
 
+export type TransitionAttachment = (node: HTMLElement | SVGElement) => void | (() => void);
+
+export type TransitionActionReturn = {
+	update(new_props: string | TransitionAction): void;
+	destroy(): void;
+};
+
 export type TransitionActionFunctions = {
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	[Key in keyof TransitionAction]-?: Extract<TransitionAction[Key], Function>;
@@ -230,60 +237,28 @@ function classes(
 	);
 }
 
-function transition(node: HTMLElement | SVGElement, props: string | TransitionAction) {
-	if (typeof props === 'string') {
-		node.style.setProperty('view-transition-name', props);
-		return;
-	}
-	function setup_listeners_for_props(props: TransitionAction) {
-		let classes_to_add: string[] | undefined;
-		const off_functions: ReturnType<typeof on>[] = [];
-		off_functions.push(
-			on(
-				'after-navigation-complete',
-				(callback_props) => {
-					const { top } = node.getBoundingClientRect();
-					const is_in_viewport = top < window.innerHeight + window.scrollY;
-					const props_for_callback = { ...callback_props, node, isInViewport: is_in_viewport };
-					let apply_immediately = false;
-					if (props.applyImmediately != null) {
-						apply_immediately =
-							typeof props.applyImmediately === 'boolean'
-								? props.applyImmediately
-								: props.applyImmediately(props_for_callback);
-					}
-					if (apply_immediately) {
-						const name =
-							typeof props.name === 'function' ? props.name(props_for_callback) : props.name;
-						node.style.setProperty('view-transition-name', name);
-						off_functions.push(
-							on(
-								'transition-finished',
-								() => {
-									node.style.setProperty('view-transition-name', null);
-								},
-								{ registerDuringTransition: true, autoWrap: false, autoClean: false },
-							),
-						);
-					}
-				},
-				{ registerDuringTransition: true, autoWrap: false, autoClean: false },
-			),
-		);
-		const off_before = on(
-			'before-start-view-transition',
+function is_element(value: unknown): value is HTMLElement | SVGElement {
+	return typeof Element !== 'undefined' && value instanceof Element;
+}
+
+function setup_listeners_for_props(node: HTMLElement | SVGElement, props: TransitionAction) {
+	let classes_to_add: string[] | undefined;
+	const off_functions: ReturnType<typeof on>[] = [];
+	off_functions.push(
+		on(
+			'after-navigation-complete',
 			(callback_props) => {
-				let should_apply = true;
 				const { top } = node.getBoundingClientRect();
 				const is_in_viewport = top < window.innerHeight + window.scrollY;
 				const props_for_callback = { ...callback_props, node, isInViewport: is_in_viewport };
-				if (props.shouldApply != null) {
-					should_apply =
-						typeof props.shouldApply === 'boolean'
-							? props.shouldApply
-							: props.shouldApply(props_for_callback);
+				let apply_immediately = false;
+				if (props.applyImmediately != null) {
+					apply_immediately =
+						typeof props.applyImmediately === 'boolean'
+							? props.applyImmediately
+							: props.applyImmediately(props_for_callback);
 				}
-				if (should_apply) {
+				if (apply_immediately) {
 					const name =
 						typeof props.name === 'function' ? props.name(props_for_callback) : props.name;
 					node.style.setProperty('view-transition-name', name);
@@ -293,47 +268,112 @@ function transition(node: HTMLElement | SVGElement, props: string | TransitionAc
 							() => {
 								node.style.setProperty('view-transition-name', null);
 							},
-							{
-								autoWrap: false,
-								registerDuringTransition: true,
-								autoClean: false,
-							},
+							{ registerDuringTransition: true, autoWrap: false, autoClean: false },
 						),
 					);
-					if (props.classes) {
-						classes_to_add = Array.isArray(props.classes)
-							? props.classes
-							: props.classes(props_for_callback);
-					}
-					if (classes_to_add) {
-						document.documentElement.classList.add(...classes_to_add);
-					} else {
-						off_finished?.();
-					}
 				}
 			},
-			{ registerDuringTransition: false, autoWrap: false, autoClean: false },
-		);
-		off_functions.push(off_before);
-		let off_finished: ReturnType<typeof on> | undefined = undefined;
-		off_finished = on(
-			'transition-finished',
-			() => {
-				if (classes_to_add && classes_to_add.length > 0) {
-					document.documentElement.classList.remove(...classes_to_add);
+			{ registerDuringTransition: true, autoWrap: false, autoClean: false },
+		),
+	);
+	const off_before = on(
+		'before-start-view-transition',
+		(callback_props) => {
+			let should_apply = true;
+			const { top } = node.getBoundingClientRect();
+			const is_in_viewport = top < window.innerHeight + window.scrollY;
+			const props_for_callback = { ...callback_props, node, isInViewport: is_in_viewport };
+			if (props.shouldApply != null) {
+				should_apply =
+					typeof props.shouldApply === 'boolean'
+						? props.shouldApply
+						: props.shouldApply(props_for_callback);
+			}
+			if (should_apply) {
+				const name = typeof props.name === 'function' ? props.name(props_for_callback) : props.name;
+				node.style.setProperty('view-transition-name', name);
+				off_functions.push(
+					on(
+						'transition-finished',
+						() => {
+							node.style.setProperty('view-transition-name', null);
+						},
+						{
+							autoWrap: false,
+							registerDuringTransition: true,
+							autoClean: false,
+						},
+					),
+				);
+				if (props.classes) {
+					classes_to_add = Array.isArray(props.classes)
+						? props.classes
+						: props.classes(props_for_callback);
 				}
-			},
-			{ registerDuringTransition: false, autoWrap: false, autoClean: false },
-		);
-		off_functions.push(off_finished);
-		return () => {
-			off_functions.forEach((off) => {
-				off(false);
-			});
-		};
+				if (classes_to_add) {
+					document.documentElement.classList.add(...classes_to_add);
+				} else {
+					off_finished?.();
+				}
+			}
+		},
+		{ registerDuringTransition: false, autoWrap: false, autoClean: false },
+	);
+	off_functions.push(off_before);
+	let off_finished: ReturnType<typeof on> | undefined = undefined;
+	off_finished = on(
+		'transition-finished',
+		() => {
+			if (classes_to_add && classes_to_add.length > 0) {
+				document.documentElement.classList.remove(...classes_to_add);
+			}
+		},
+		{ registerDuringTransition: false, autoWrap: false, autoClean: false },
+	);
+	off_functions.push(off_finished);
+	return () => {
+		off_functions.forEach((off) => {
+			off(false);
+		});
+	};
+}
+
+function transition_attachment(props: string | TransitionAction): TransitionAttachment {
+	return (node) => {
+		if (typeof props === 'string') {
+			node.style.setProperty('view-transition-name', props);
+			return () => {
+				node.style.setProperty('view-transition-name', null);
+			};
+		}
+		return setup_listeners_for_props(node, props);
+	};
+}
+
+function transition(props: string | TransitionAction): TransitionAttachment;
+function transition(
+	node: HTMLElement | SVGElement,
+	props: string | TransitionAction,
+): TransitionActionReturn | undefined;
+function transition(
+	node_or_props: HTMLElement | SVGElement | string | TransitionAction,
+	props?: string | TransitionAction,
+): TransitionAttachment | TransitionActionReturn | undefined {
+	// when called without a node (`{@attach transition(props)}`) return an attachment
+	if (!is_element(node_or_props)) {
+		return transition_attachment(node_or_props);
 	}
-	let cleanup: ReturnType<typeof setup_listeners_for_props> | undefined =
-		setup_listeners_for_props(props);
+	// otherwise behave as an action (`use:transition={props}`)
+	const node = node_or_props;
+	if (props == null) return;
+	if (typeof props === 'string') {
+		node.style.setProperty('view-transition-name', props);
+		return;
+	}
+	let cleanup: ReturnType<typeof setup_listeners_for_props> | undefined = setup_listeners_for_props(
+		node,
+		props,
+	);
 	return {
 		update(new_props: string | TransitionAction) {
 			// on update remove the previous listeners
@@ -345,7 +385,7 @@ function transition(node: HTMLElement | SVGElement, props: string | TransitionAc
 				return;
 			}
 			// otherwise run the setup listeners function and store the new cleanup
-			cleanup = setup_listeners_for_props(new_props);
+			cleanup = setup_listeners_for_props(node, new_props);
 		},
 		destroy() {
 			// clean everything
@@ -431,8 +471,11 @@ export function setupViewTransition() {
 		 */
 		off,
 		/**
-		 * The action to specify a transition name on a specific element. You can use it on an element
+		 * The attachment (or action) to specify a transition name on a specific element. You can use it on an element
 		 * passing a string to directly assign that specific string as view transition name.
+		 *
+		 * It can be used both as an attachment (`{@attach transition(props)}`, requires svelte >= 5.29)
+		 * or as an action (`use:transition={props}`).
 		 *
 		 * If you pass an object instead you can specify a series of options:
 		 *
@@ -450,8 +493,9 @@ export function setupViewTransition() {
 		 * this page and the `to` is the page you are navigating to) and return a boolean. If the boolean is true the transition name will be applied.
 		 * This is useful when you want to navigate from a list to a detail.
 		 *
-		 * @param node The element to apply the action to
-		 * @param props either a string for a simple view transition name or a set of options
+		 * @param node_or_props when used as an attachment either a string for a simple view transition name or a set of options,
+		 * when used as an action the element to apply the action to
+		 * @param props when used as an action either a string for a simple view transition name or a set of options
 		 */
 		transition,
 		/**
